@@ -72,22 +72,22 @@ data class Card(
 // board repository
 
 @Repository
-class BoardRepository
+class BoardRepository // TODO
 
 // list repository
 
 @Repository
-class ListRepository 
+class ListRepository // TODO
 
 // card repository
 
 @Repository
-class CardRepository 
+class CardRepository // TODO
 
 // controllers
 
 
-/*
+/* TODO
    CardTable
    CardId | Name | Color | CreationDate | DeadlineDate | CreatorId | -assignedUserIds- | CardContent
 
@@ -121,5 +121,3 @@ class CardRepository
    Settings
    UserId | Settings (JSON)
  */
-
-

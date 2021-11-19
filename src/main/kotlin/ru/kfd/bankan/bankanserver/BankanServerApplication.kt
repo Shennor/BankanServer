@@ -11,24 +11,22 @@ fun main(args: Array<String>) {
     runApplication<BankanServerApplication>(*args)
 }
 
-// board repository
+
 // TODO Repositories whatever it is
 
+// board repository
 @Repository
 class BoardRepository // TODO
 
 // list repository
-
 @Repository
 class ListRepository // TODO
 
 // card repository
-
 @Repository
 class CardRepository // TODO
 
-// controllers
-
+// TODO services & controllers
 
 /* TODO Database markup
 

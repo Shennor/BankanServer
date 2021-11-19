@@ -1,4 +1,4 @@
-package ru.kfd.bankan.bankanserver.pages
+package ru.kfd.bankan.bankanserver.controller.page
 
 import org.springframework.stereotype.Controller
 

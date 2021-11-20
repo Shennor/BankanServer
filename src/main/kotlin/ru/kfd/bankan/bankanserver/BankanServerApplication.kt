@@ -31,7 +31,7 @@ class CardRepository // TODO
 /* TODO Database markup
 
    CardTable
-   CardId | Name | Color | CreationDate | DeadlineDate | CreatorId | -assignedUserIds- | CardContent
+   CardId | Name | Color | CreationDate | DeadlineDate | CreatorId | CardContent
 
    CardToAssignedUsers
    Key | UserId | CardId

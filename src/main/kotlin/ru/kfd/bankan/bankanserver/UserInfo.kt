@@ -10,7 +10,7 @@ import javax.persistence.*
     ]
 )
 @Entity
-class UserInfo(
+data class UserInfo(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

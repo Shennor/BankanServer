@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver.controller.data
 
-import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.UserInfo
 import ru.kfd.bankan.bankanserver.UserInfoRepository
@@ -15,9 +14,25 @@ class Users(
         return userInfoRepository.findById(id).get()
     }
 
-    @PostMapping(consumes = [MediaType.APPLICATION_JSON_VALUE])
+    @PostMapping
     fun post(@RequestBody(required = true) user: UserInfo): String {
         val newUser = userInfoRepository.save(user)
         return "Added $newUser"
+    }
+
+    @PatchMapping
+    fun patch(
+        @RequestBody(required = true) user: UserInfo,
+    ): String {
+        val old = userInfoRepository.findById(user.id).get().copy()
+        val newUser = userInfoRepository.save(user)
+        return "Updated \nold: $old\nnew: $newUser"
+    }
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Int): String {
+        val user = userInfoRepository.findById(id).get()
+        userInfoRepository.deleteById(id)
+        return "Ok, $user was deleted"
     }
 }

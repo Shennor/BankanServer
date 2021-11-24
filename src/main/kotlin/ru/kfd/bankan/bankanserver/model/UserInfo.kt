@@ -1,4 +1,4 @@
-package ru.kfd.bankan.bankanserver
+package ru.kfd.bankan.bankanserver.model
 
 import org.hibernate.Hibernate
 import java.time.LocalDate

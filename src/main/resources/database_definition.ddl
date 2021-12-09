@@ -90,7 +90,7 @@ create table user_to_table_mapping
 create table password_hash
 (
     id      integer primary key auto_increment,
-    user_id integer     not null,
+    user_id integer     not null unique,
     hash    varchar(16) not null,
     foreign key (user_id) references user_info (id)
 );

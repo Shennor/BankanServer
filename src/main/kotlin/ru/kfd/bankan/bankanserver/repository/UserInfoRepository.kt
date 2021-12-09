@@ -5,4 +5,7 @@ import ru.kfd.bankan.bankanserver.model.UserInfo
 
 interface UserInfoRepository : CrudRepository<UserInfo, Int>{
     fun findByLogin(login : String) : UserInfo;
+    fun findByAccessToken(accessToken: String): UserInfo?
+    fun findByUsername(username: String): UserInfo?
+    fun existsByUsername(username: String): Boolean
 }

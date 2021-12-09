@@ -37,6 +37,11 @@ class SecurityConfig(
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
-        TODO("Not implemented, need to configure auth with database")
+        auth.userDetailsService<UserDetailsService>(userDetailsService)
+            .passwordEncoder(encoder())
+    }
+
+    private fun encoder(): PasswordEncoder? {
+        TODO("Not yet implemented")
     }
 }

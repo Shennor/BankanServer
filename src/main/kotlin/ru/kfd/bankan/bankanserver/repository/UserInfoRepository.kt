@@ -1,11 +1,11 @@
 package ru.kfd.bankan.bankanserver.repository
 
 import org.springframework.data.repository.CrudRepository
-import ru.kfd.bankan.bankanserver.model.UserInfo
+import ru.kfd.bankan.bankanserver.entity.UserInfo
 
 interface UserInfoRepository : CrudRepository<UserInfo, Int>{
     fun findByLogin(login : String) : UserInfo;
-    fun findByAccessToken(accessToken: String): UserInfo?
-    fun findByUsername(username: String): UserInfo?
-    fun existsByUsername(username: String): Boolean
+//    fun findByAccessToken(accessToken: String): UserInfo?
+//    fun findByUsername(username: String): UserInfo?
+//    fun existsByUsername(username: String): Boolean
 }

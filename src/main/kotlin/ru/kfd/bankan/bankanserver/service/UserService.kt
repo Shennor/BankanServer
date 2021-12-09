@@ -1,6 +1,6 @@
 package ru.kfd.bankan.bankanserver.service
 
-import ru.kfd.bankan.bankanserver.model.UserInfo
+import ru.kfd.bankan.bankanserver.entity.UserInfo
 
 interface UserService {
     fun findByLogin(login: String): UserInfo

@@ -25,6 +25,7 @@ data class UserInfo(
     @Column(name = "registration_date", nullable = false)
     val registrationDate: LocalDate = LocalDate.now(),
 ) {
+    // Required for data class overrides
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || Hibernate.getClass(this) != Hibernate.getClass(

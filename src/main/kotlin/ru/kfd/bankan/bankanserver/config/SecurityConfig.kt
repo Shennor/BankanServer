@@ -24,7 +24,7 @@ import javax.sql.DataSource
 class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
-    lateinit var userDetailsService : UserDetailsServiceImpl
+    lateinit var userDetailsService: UserDetailsServiceImpl
 
     override fun configure(http: HttpSecurity) {
         http.authorizeRequests()
@@ -44,23 +44,12 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .logoutSuccessUrl("/home")
     }
 
-    fun passwordEncoder() : PasswordEncoder{
+    fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
-
-//    fun daoAuthProvider() : DaoAuthenticationProvider{
-//        val authProvider = DaoAuthenticationProvider();
-//        authProvider.setPasswordEncoder(passwordEncoder())
-//        authProvider.setUserDetailsService(userDetailsService)
-//        return authProvider
-//    }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.userDetailsService<UserDetailsService>(userDetailsService)
             .passwordEncoder(passwordEncoder())
     }
-
-//    fun users(dataSource : DataSource) : JdbcUserDetailsManager{
-//
-//    }
 }

@@ -4,14 +4,15 @@ import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.entity.UserInfo
 import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
 
+/*
 @RestController
 @RequestMapping("api/user")
 class Users(
-    val userInfoRepository: AuthInfoRepository
+    val authInfoRepository: AuthInfoRepository
 ) {
     @GetMapping("/{id}")
     fun get(@PathVariable id: Int): UserInfo {
-        return userInfoRepository.findById(id).get()
+        return authInfoRepository.findById(id).get()
     }
 
     @PostMapping
@@ -36,3 +37,4 @@ class Users(
         return "Ok, $user was deleted"
     }
 }
+*/

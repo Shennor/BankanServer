@@ -48,17 +48,17 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         return BCryptPasswordEncoder()
     }
 
-    fun daoAuthProvider() : DaoAuthenticationProvider{
-        val authProvider = DaoAuthenticationProvider();
-        authProvider.setPasswordEncoder(passwordEncoder())
-        authProvider.setUserDetailsService(userDetailsService)
-        return authProvider
-    }
-
-//    override fun configure(auth: AuthenticationManagerBuilder) {
-//        auth.userDetailsService<UserDetailsService>(userDetailsService)
-//            .passwordEncoder(passwordEncoder())
+//    fun daoAuthProvider() : DaoAuthenticationProvider{
+//        val authProvider = DaoAuthenticationProvider();
+//        authProvider.setPasswordEncoder(passwordEncoder())
+//        authProvider.setUserDetailsService(userDetailsService)
+//        return authProvider
 //    }
+
+    override fun configure(auth: AuthenticationManagerBuilder) {
+        auth.userDetailsService<UserDetailsService>(userDetailsService)
+            .passwordEncoder(passwordEncoder())
+    }
 
 //    fun users(dataSource : DataSource) : JdbcUserDetailsManager{
 //

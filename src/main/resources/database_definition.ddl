@@ -7,7 +7,7 @@ create table auth_info
 (
     id                integer primary key auto_increment,
     login             varchar(20) not null unique,
-    password_hash     varchar(255) not null
+    password_hash     varchar(60) not null
 );
 
 create table user_info

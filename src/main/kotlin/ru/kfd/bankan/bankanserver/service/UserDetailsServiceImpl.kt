@@ -8,21 +8,18 @@ import org.springframework.stereotype.Service
 import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import ru.kfd.bankan.bankanserver.repository.PasswordRepository
 
 @Primary
 @Service
 class UserDetailsServiceImpl(
-    val userInfoRepository: AuthInfoRepository,
-    val passwordRepository: PasswordRepository
-) : UserDetailsService {
+    val authInfoRepository: AuthInfoRepository,
+    ) : UserDetailsService {
 
     override fun loadUserByUsername(login: String): UserDetails? {
-        val user = userInfoRepository.findByLogin(login) ?: throw UsernameNotFoundException("User $login not found")
-        val passwordHash = passwordRepository.findByUserId(user.id).hash ?: throw InternalError("Password for user $login not found in database")
+        val user = authInfoRepository.findByLogin(login) ?: throw UsernameNotFoundException("User $login not found")
         return UserDetailsImpl(
-            username = user.login,
-            password = passwordHash,
+            username = user.login!!,
+            password = user.passwordHash!!,
             authorities = listOf(SimpleGrantedAuthority("USER")))
     }
 }

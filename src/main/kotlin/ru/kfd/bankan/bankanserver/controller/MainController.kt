@@ -2,6 +2,7 @@ package ru.kfd.bankan.bankanserver.controller
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
+import java.security.Principal
 
 @RestController
 class MainController {
@@ -12,8 +13,8 @@ class MainController {
     }
 
     @GetMapping("/auth")
-    fun pageForAuthenticatedUsers() : String {
-        return "secured part of web service"
+    fun pageForAuthenticatedUsers(principal : Principal) : String {
+        return "secured part of web service : " + principal.name;
     }
 
 }

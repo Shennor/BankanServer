@@ -1,13 +1,23 @@
+drop database if exists bankan;
 create database bankan;
 
 use bankan;
 
-create table user_info
+create table auth_info
 (
     id                integer primary key auto_increment,
     login             varchar(20) not null unique,
+    password_hash     varchar(255) not null
+);
+
+create table user_info
+(
+    id                integer primary key auto_increment,
+    auth_id           integer not null,
     name              varchar(40) not null,
-    registration_date date        not null default (curdate())
+    registration_date date not null default (curdate()),
+
+    foreign key (auth_id) references auth_info (id)
 );
 
 create table card
@@ -84,15 +94,6 @@ create table user_to_table_mapping
     index_of_board_in_workspace integer not null,
     foreign key (user_id) references user_info (id),
     foreign key (board_id) references card (id)
-);
-
-
-create table password_hash
-(
-    id      integer primary key auto_increment,
-    user_id integer     not null unique,
-    hash    varchar(16) not null,
-    foreign key (user_id) references user_info (id)
 );
 
 create table user_settings

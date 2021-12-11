@@ -3,6 +3,8 @@ package ru.kfd.bankan.bankanserver.config
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
+import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -42,8 +44,23 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .logoutSuccessUrl("/home")
     }
 
-    override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService<UserDetailsService>(userDetailsService)
-            .passwordEncoder(BCryptPasswordEncoder())
+    fun passwordEncoder() : PasswordEncoder{
+        return BCryptPasswordEncoder()
     }
+
+    fun daoAuthProvider() : DaoAuthenticationProvider{
+        val authProvider = DaoAuthenticationProvider();
+        authProvider.setPasswordEncoder(passwordEncoder())
+        authProvider.setUserDetailsService(userDetailsService)
+        return authProvider
+    }
+
+//    override fun configure(auth: AuthenticationManagerBuilder) {
+//        auth.userDetailsService<UserDetailsService>(userDetailsService)
+//            .passwordEncoder(passwordEncoder())
+//    }
+
+//    fun users(dataSource : DataSource) : JdbcUserDetailsManager{
+//
+//    }
 }

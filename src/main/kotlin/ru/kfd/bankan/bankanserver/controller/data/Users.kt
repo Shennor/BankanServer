@@ -2,12 +2,12 @@ package ru.kfd.bankan.bankanserver.controller.data
 
 import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.entity.UserInfo
-import ru.kfd.bankan.bankanserver.repository.UserInfoRepository
+import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
 
 @RestController
 @RequestMapping("api/user")
 class Users(
-    val userInfoRepository: UserInfoRepository
+    val userInfoRepository: AuthInfoRepository
 ) {
     @GetMapping("/{id}")
     fun get(@PathVariable id: Int): UserInfo {

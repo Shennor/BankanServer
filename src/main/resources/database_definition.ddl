@@ -3,21 +3,21 @@ create database bankan;
 
 use bankan;
 
-create table auth_info
-(
-    id                integer primary key auto_increment,
-    login             varchar(20) not null unique,
-    password_hash     varchar(60) not null
-);
-
 create table user_info
 (
     id                integer primary key auto_increment,
-    auth_id           integer not null,
     name              varchar(40) not null,
-    registration_date date not null default (curdate()),
+    registration_date date not null default (curdate())
+);
 
-    foreign key (auth_id) references auth_info (id)
+create table auth_info
+(
+    id                integer primary key auto_increment,
+    user_id           integer not null,
+    login             varchar(20) not null unique,
+    password_hash     varchar(60) not null,
+
+    foreign key (user_id) references user_info (id)
 );
 
 create table card

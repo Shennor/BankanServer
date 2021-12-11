@@ -28,38 +28,3 @@ class CardRepository // TODO
 
 // TODO services & controllers
 
-/* TODO Database markup
-
-   CardTable
-   CardId | Name | Color | CreationDate | DeadlineDate | CreatorId | CardContent
-
-   CardToAssignedUsers
-   Key | UserId | CardId
-
-   ListToCardMapping
-   Key | ListId | CardId | IndexOfCardInList
-
-   ListTable
-   ListId | Name | CreationDate
-
-   BoardToListMapping
-   Key | BoardId | ListId | IndexOfListInBoard
-
-   BoardTable
-   BoardId | Name | Description | CreationDate
-
-   BoardToAssignedUsers
-   Key | UserId | BoardIs
-
-   WorkspaceToTable
-   Key | Workspace | Board | IndexOfBoardInWorkspace
-
-   UserInfoTable
-   UserId | UserAttributes (login, name)... |
-
-   PasswordsHash-Table
-   UserId | Password
-
-   Settings
-   UserId | Settings (JSON)
- */

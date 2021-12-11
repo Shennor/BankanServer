@@ -1,9 +1,5 @@
 package ru.kfd.bankan.bankanserver.controller.data
 
-import org.springframework.web.bind.annotation.*
-import ru.kfd.bankan.bankanserver.entity.UserInfo
-import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
-
 /*
 @RestController
 @RequestMapping("api/user")

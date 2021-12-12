@@ -1,39 +1,40 @@
 package ru.kfd.bankan.bankanserver.entity
 
-import java.sql.Date
+import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
 @Table(name = "user_info", schema = "bankan")
-class UserInfoEntity {
+class UserInfoEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
-    var id = 0
+    @Column(name = "id", nullable = false)
+    var id: Int = 0,
 
     @Basic
-    @Column(name = "name")
-    var name: String? = null
-
-    @Basic
-    @Column(name = "registration_date")
-    var registrationDate: Date? = null
+    @Column(name = "name", nullable = false)
+    var name: String,
 
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as UserInfoEntity
+    @Column(name = "registration_date", nullable = false)
+    val registrationDate: LocalDate = LocalDate.now(),
+) {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as UserInfoEntity
         if (id != that.id) return false
-        if (if (name != null) name != that.name else that.name != null) return false
-        return if (if (registrationDate != null) registrationDate != that.registrationDate else that.registrationDate != null) false else true
+        if (name != that.name) return false
+        return registrationDate == that.registrationDate
     }
 
     override fun hashCode(): Int {
         var result = id
-        result = 31 * result + if (name != null) name.hashCode() else 0
+        result = 31 * result + name.hashCode()
         result =
-            31 * result + if (registrationDate != null) registrationDate.hashCode() else 0
+            31 * result + registrationDate.hashCode()
         return result
     }
 }
+

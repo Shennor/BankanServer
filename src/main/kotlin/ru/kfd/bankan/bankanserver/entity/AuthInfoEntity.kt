@@ -4,40 +4,41 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "auth_info", schema = "bankan")
-class AuthInfoEntity {
+class AuthInfoEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
-    var id = 0
+    @Column(name = "id", nullable = false)
+    var id: Int = 0,
 
     @Basic
-    @Column(name = "user_id")
-    var userId = 0
+    @Column(name = "user_id", nullable = false)
+    var userId: Int = 0,
 
     @Basic
-    @Column(name = "login")
-    var login: String? = null
+    @Column(name = "login", nullable = false)
+    var login: String,
 
     @Basic
-    @Column(name = "password_hash")
-    var passwordHash: String? = null
+    @Column(name = "password_hash", nullable = false)
+    var passwordHash: String,
+) {
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as AuthInfoEntity
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as AuthInfoEntity
         if (id != that.id) return false
         if (userId != that.userId) return false
-        if (if (login != null) login != that.login else that.login != null) return false
-        return if (if (passwordHash != null) passwordHash != that.passwordHash else that.passwordHash != null) false else true
+        if (login != that.login) return false
+        return passwordHash == that.passwordHash
     }
 
     override fun hashCode(): Int {
         var result = id
         result = 31 * result + userId
-        result = 31 * result + if (login != null) login.hashCode() else 0
+        result = 31 * result + login.hashCode()
         result =
-            31 * result + if (passwordHash != null) passwordHash.hashCode() else 0
+            31 * result + passwordHash.hashCode()
         return result
     }
 }

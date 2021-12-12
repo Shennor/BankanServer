@@ -1,6 +1,7 @@
 package ru.kfd.bankan.bankanserver.service
 
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Primary
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -9,11 +10,15 @@ import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.transaction.annotation.Transactional
+import ru.kfd.bankan.bankanserver.entity.AuthInfoEntity
+import ru.kfd.bankan.bankanserver.entity.UserInfoEntity
+import ru.kfd.bankan.bankanserver.repository.UserInfoRepository
 
 @Primary
 @Service
 class UserDetailsServiceImpl(
     val authInfoRepository: AuthInfoRepository,
+    val userInfoRepository: UserInfoRepository
 ) : UserDetailsService {
 
     @Transactional
@@ -29,6 +34,16 @@ class UserDetailsServiceImpl(
             password = user.passwordHash,
             authorities = listOf(SimpleGrantedAuthority("USER"))
         )
+    }
+
+    fun saveUser(auth: AuthInfoEntity, user: UserInfoEntity): Boolean {
+        if (authInfoRepository.existsByLogin(auth.login)) {
+            return false;
+        }
+        val newUserId = userInfoRepository.save(user).id
+        auth.userId = newUserId
+        authInfoRepository.save(auth)
+        return true
     }
 }
 

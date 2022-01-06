@@ -22,12 +22,12 @@ class UserDetailsServiceImpl(
 
     @Transactional
     override fun loadUserByUsername(login: String): UserDetails {
-        if (authInfoRepository.existsByEmail(login))
+        if (!authInfoRepository.existsByEmail(login))
             throw UsernameNotFoundException("User $login not found")
 
         val user = authInfoRepository.findByEmail(login)
 
-        return UserDetailsImpl::build.call(user)
+        return UserDetailsImpl.build(user)
     }
 
     fun saveUser(auth: AuthInfoEntity, user: UserInfoEntity): Boolean {

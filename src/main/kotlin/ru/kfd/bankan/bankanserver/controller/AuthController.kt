@@ -24,7 +24,7 @@ import javax.websocket.Encoder
 
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
-@RequestMapping("/auth/")
+@RequestMapping("/api/auth")
 class AuthController(
     val authenticationManager: AuthenticationManager,
     val userInfoRepository: UserInfoRepository,

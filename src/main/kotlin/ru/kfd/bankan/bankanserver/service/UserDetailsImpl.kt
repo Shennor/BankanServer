@@ -17,6 +17,17 @@ class UserDetailsImpl(
     private val authorities: Collection<GrantedAuthority>
 ) : UserDetails {
 
+    companion object{
+        fun build(user: AuthInfoEntity): UserDetailsImpl {
+            return UserDetailsImpl(
+                user.userId,
+                user.email,
+                user.passwordHash,
+                listOf(SimpleGrantedAuthority("USER"))
+            )
+        }
+    }
+
     override fun getAuthorities(): Collection<GrantedAuthority> = authorities
     fun getId(): Int = userId
     fun getEmail(): String = username
@@ -28,14 +39,7 @@ class UserDetailsImpl(
     override fun isCredentialsNonExpired(): Boolean = true
     override fun isEnabled(): Boolean = true
 
-    fun build(user: AuthInfoEntity): UserDetailsImpl {
-        return UserDetailsImpl(
-            user.userId,
-            user.email,
-            user.passwordHash,
-            listOf(SimpleGrantedAuthority("USER"))
-        )
-    }
+
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

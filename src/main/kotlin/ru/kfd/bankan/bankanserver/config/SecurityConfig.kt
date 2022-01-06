@@ -47,6 +47,11 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 "/board/*/public/**",
                 "/"
             ).permitAll()
+            .mvcMatchers(
+                HttpMethod.POST,
+                "/api/auth/signin",
+                "/api/auth/signup",
+            ).permitAll()
             .anyRequest().authenticated()
             .and().formLogin()
             //.loginPage("/login")
@@ -58,9 +63,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
     }
 
-
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService<UserDetailsService>(userDetailsService)
+        auth.userDetailsService(userDetailsService)
             .passwordEncoder(passwordEncoder())
     }
 

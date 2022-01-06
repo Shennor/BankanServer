@@ -1,15 +1,25 @@
 package ru.kfd.bankan.bankanserver.service
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import ru.kfd.bankan.bankanserver.entity.AuthInfoEntity
+import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
+import java.util.*
+import java.util.stream.Collectors
+
 
 class UserDetailsImpl(
-    val userId: Int,
-    private val username: String,
-    private val password: String,
+    private val userId: Int,
+    private val username : String,
+    @JsonIgnore private val password: String,
     private val authorities: Collection<GrantedAuthority>
 ) : UserDetails {
+
     override fun getAuthorities(): Collection<GrantedAuthority> = authorities
+    fun getId(): Int = userId
+    fun getEmail(): String = username
     override fun getPassword(): String = password
     override fun getUsername(): String = username
 
@@ -17,4 +27,21 @@ class UserDetailsImpl(
     override fun isAccountNonLocked(): Boolean = true
     override fun isCredentialsNonExpired(): Boolean = true
     override fun isEnabled(): Boolean = true
+
+    fun build(user: AuthInfoEntity): UserDetailsImpl {
+        return UserDetailsImpl(
+            user.userId,
+            user.email,
+            user.passwordHash,
+            listOf(SimpleGrantedAuthority("USER"))
+        )
+    }
+
+    override fun equals(o: Any?): Boolean {
+        if (this === o) return true
+        if (o == null || javaClass != o.javaClass) return false
+        val user = o as UserDetailsImpl
+        return Objects.equals(userId, user.userId)
+    }
 }
+

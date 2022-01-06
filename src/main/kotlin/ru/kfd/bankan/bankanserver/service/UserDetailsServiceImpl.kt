@@ -1,7 +1,6 @@
 package ru.kfd.bankan.bankanserver.service
 
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Primary
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -23,21 +22,16 @@ class UserDetailsServiceImpl(
 
     @Transactional
     override fun loadUserByUsername(login: String): UserDetails {
-        if (authInfoRepository.existsByLogin(login))
+        if (authInfoRepository.existsByEmail(login))
             throw UsernameNotFoundException("User $login not found")
 
-        val user = authInfoRepository.findByLogin(login)
+        val user = authInfoRepository.findByEmail(login)
 
-        return UserDetailsImpl(
-            userId = user.userId,
-            username = user.login,
-            password = user.passwordHash,
-            authorities = listOf(SimpleGrantedAuthority("USER"))
-        )
+        return UserDetailsImpl::build.call(user)
     }
 
     fun saveUser(auth: AuthInfoEntity, user: UserInfoEntity): Boolean {
-        if (authInfoRepository.existsByLogin(auth.login)) {
+        if (authInfoRepository.existsByEmail(auth.email)) {
             return false;
         }
         val newUserId = userInfoRepository.save(user).id

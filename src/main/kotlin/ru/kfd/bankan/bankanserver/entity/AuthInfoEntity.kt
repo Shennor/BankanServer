@@ -15,8 +15,8 @@ class AuthInfoEntity(
     var userId: Int = 0,
 
     @Basic
-    @Column(name = "login", nullable = false)
-    var login: String,
+    @Column(name = "email", nullable = false)
+    var email: String,
 
     @Basic
     @Column(name = "password_hash", nullable = false)
@@ -29,14 +29,14 @@ class AuthInfoEntity(
         val that = other as AuthInfoEntity
         if (id != that.id) return false
         if (userId != that.userId) return false
-        if (login != that.login) return false
+        if (email != that.email) return false
         return passwordHash == that.passwordHash
     }
 
     override fun hashCode(): Int {
         var result = id
         result = 31 * result + userId
-        result = 31 * result + login.hashCode()
+        result = 31 * result + email.hashCode()
         result =
             31 * result + passwordHash.hashCode()
         return result

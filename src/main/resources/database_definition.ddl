@@ -14,7 +14,7 @@ create table auth_info
 (
     id                integer primary key auto_increment,
     user_id           integer not null,
-    login             varchar(20) not null unique,
+    email             varchar(20) not null unique,
     password_hash     varchar(60) not null,
 
     foreign key (user_id) references user_info (id)

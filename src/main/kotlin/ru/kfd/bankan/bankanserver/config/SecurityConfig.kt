@@ -8,9 +8,14 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import ru.kfd.bankan.bankanserver.AuthEntryPointJwt
+import ru.kfd.bankan.bankanserver.AuthTokenFilter
+import ru.kfd.bankan.bankanserver.JwtUtils
 import ru.kfd.bankan.bankanserver.service.UserDetailsServiceImpl
 
 
@@ -20,8 +25,20 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     lateinit var userDetailsService: UserDetailsServiceImpl
 
+    @Autowired
+    private val unauthorizedHandler: AuthEntryPointJwt? = null
+
+    @Bean
+    fun authenticationJwtTokenFilter(): AuthTokenFilter? {
+        var jwtUtils = JwtUtils()
+        return AuthTokenFilter(jwtUtils, userDetailsService)
+    }
+
     override fun configure(http: HttpSecurity) {
-        http.authorizeRequests()
+        http.cors().and().csrf().disable()
+            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .authorizeRequests()
             .mvcMatchers(
                 HttpMethod.GET,
                 "/registration",
@@ -36,6 +53,9 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             //.failureUrl("/login/fail")
             .and().logout()
             .logoutSuccessUrl("/home")
+
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter::class.java)
+
     }
 
 

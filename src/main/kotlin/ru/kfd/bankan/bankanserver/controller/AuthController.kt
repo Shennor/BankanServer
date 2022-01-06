@@ -8,23 +8,29 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.JwtUtils
+import ru.kfd.bankan.bankanserver.entity.AuthInfoEntity
+import ru.kfd.bankan.bankanserver.entity.UserInfoEntity
 import ru.kfd.bankan.bankanserver.payload.request.LoginRequest
 import ru.kfd.bankan.bankanserver.payload.request.SignupRequest
 import ru.kfd.bankan.bankanserver.payload.response.JwtResponse
 import ru.kfd.bankan.bankanserver.payload.response.MessageResponse
 import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
+import ru.kfd.bankan.bankanserver.repository.UserInfoRepository
 import ru.kfd.bankan.bankanserver.service.UserDetailsImpl
 import java.util.stream.Collectors
 import javax.validation.Valid
+import javax.websocket.Encoder
 
 
 @CrossOrigin(origins = ["*"], maxAge = 3600)
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth/")
 class AuthController(
-    var authenticationManager: AuthenticationManager,
-    var authInfoRepository: AuthInfoRepository,
-    var jwtUtils: JwtUtils,
+    val authenticationManager: AuthenticationManager,
+    val userInfoRepository: UserInfoRepository,
+    val authInfoRepository: AuthInfoRepository,
+    val encoder: PasswordEncoder,
+    val jwtUtils: JwtUtils
 ) {
 
     @PostMapping("/signin")
@@ -56,6 +62,16 @@ class AuthController(
                 .badRequest()
                 .body<Any>(MessageResponse("Error: Login is already taken!"))
         }
+        val user = UserInfoEntity(
+            name = signUpRequest.username
+        )
+        val newUserId = userInfoRepository.save(user).id
+        val auth = AuthInfoEntity(
+            userId = newUserId,
+            email = signUpRequest.login,
+            passwordHash = encoder.encode(signUpRequest.password)
+        )
+        authInfoRepository.save(auth)
         return ResponseEntity.ok<Any>(MessageResponse("User registered successfully!"))
     }
 }

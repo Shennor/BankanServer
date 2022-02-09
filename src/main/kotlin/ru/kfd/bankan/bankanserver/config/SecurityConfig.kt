@@ -37,8 +37,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .authorizeRequests()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http.authorizeRequests()
             .mvcMatchers(
                 HttpMethod.GET,
                 "/registration",
@@ -53,7 +53,8 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
                 "/api/auth/signup",
             ).permitAll()
             .anyRequest().authenticated()
-            .and().formLogin()
+
+        http.formLogin()
             //.loginPage("/login")
             //.failureUrl("/login/fail")
             .and().logout()

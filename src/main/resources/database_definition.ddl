@@ -46,6 +46,7 @@ create table list
 (
     id            integer primary key auto_increment,
     name          varchar(20) not null,
+    description   text        not null,
     creation_data date        not null default (curdate())
 );
 

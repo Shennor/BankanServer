@@ -15,7 +15,6 @@ class UserInfoEntity(
     @Column(name = "name", nullable = false)
     var name: String,
 
-
     @Column(name = "registration_date", nullable = false)
     val registrationDate: LocalDate = LocalDate.now(),
 ) {

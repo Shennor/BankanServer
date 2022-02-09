@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver
 
-import org.springframework.stereotype.Repository
 import java.util.*
 
 // Notes about business-logic
@@ -51,8 +50,8 @@ data class CardInfo(
 
 sealed class Content {
     data class Text(val text: String) : Content()
-    abstract class CheckList() : Content()
-    abstract class Image() : Content()
+    abstract class CheckList : Content()
+    abstract class Image : Content()
     //...
 }
 

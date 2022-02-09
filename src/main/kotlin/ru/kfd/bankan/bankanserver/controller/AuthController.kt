@@ -19,7 +19,6 @@ import ru.kfd.bankan.bankanserver.repository.UserInfoRepository
 import ru.kfd.bankan.bankanserver.service.UserDetailsImpl
 import java.util.stream.Collectors
 import javax.validation.Valid
-import javax.websocket.Encoder
 
 
 @CrossOrigin(origins = ["*"], maxAge = 3600)

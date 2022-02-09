@@ -5,19 +5,17 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import ru.kfd.bankan.bankanserver.entity.AuthInfoEntity
-import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
 import java.util.*
-import java.util.stream.Collectors
 
 
 class UserDetailsImpl(
     private val userId: Int,
-    private val username : String,
+    private val username: String,
     @JsonIgnore private val password: String,
     private val authorities: Collection<GrantedAuthority>
 ) : UserDetails {
 
-    companion object{
+    companion object {
         fun build(user: AuthInfoEntity): UserDetailsImpl {
             return UserDetailsImpl(
                 user.userId,
@@ -38,7 +36,6 @@ class UserDetailsImpl(
     override fun isAccountNonLocked(): Boolean = true
     override fun isCredentialsNonExpired(): Boolean = true
     override fun isEnabled(): Boolean = true
-
 
 
     override fun equals(o: Any?): Boolean {

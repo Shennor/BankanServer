@@ -10,21 +10,3 @@ class BankanServerApplication
 fun main(args: Array<String>) {
     runApplication<BankanServerApplication>(*args)
 }
-
-
-// TODO Repositories whatever it is
-
-// board repository
-@Repository
-class BoardRepository // TODO
-
-// list repository
-@Repository
-class ListRepository // TODO
-
-// card repository
-@Repository
-class CardRepository // TODO
-
-// TODO services & controllers
-

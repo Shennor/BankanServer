@@ -4,7 +4,7 @@ import ru.kfd.bankan.bankanserver.entity.BoardToAssignedUserEntity
 import javax.persistence.*
 
 @Entity
-@Table(name = "board_to_assigned_user", schema = "bankan", catalog = "")
+@Table(name = "board_to_assigned_user")
 class BoardToAssignedUserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

@@ -4,7 +4,7 @@ import ru.kfd.bankan.bankanserver.entity.BoardToListMappingEntity
 import javax.persistence.*
 
 @Entity
-@Table(name = "board_to_list_mapping", schema = "bankan", catalog = "")
+@Table(name = "board_to_list_mapping")
 class BoardToListMappingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

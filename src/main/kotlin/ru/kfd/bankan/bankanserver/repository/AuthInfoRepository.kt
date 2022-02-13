@@ -4,7 +4,7 @@ import org.springframework.data.repository.CrudRepository
 import ru.kfd.bankan.bankanserver.entity.AuthInfoEntity
 
 interface AuthInfoRepository : CrudRepository<AuthInfoEntity, Int> {
-    fun findByEmail(login: String): AuthInfoEntity
-    fun existsByEmail(login: String): Boolean
+    fun findByEmail(email : String) : AuthInfoEntity?
+    fun existsByEmail(email: String): Boolean
 }
 

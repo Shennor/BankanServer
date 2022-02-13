@@ -24,7 +24,7 @@ class UserDetailsServiceImpl(
         if (!authInfoRepository.existsByEmail(login))
             throw UsernameNotFoundException("User $login not found")
 
-        val user = authInfoRepository.findByEmail(login)
+        val user = authInfoRepository.findByEmail(login)!!
 
         return UserDetailsImpl.build(user)
     }

@@ -87,14 +87,14 @@ create table board_to_assigned_user
     foreign key (board_id) references board (id)
 );
 
-create table user_to_table_mapping
+create table user_to_board_mapping
 (
     id                          integer primary key auto_increment,
     user_id                     integer not null,
     board_id                    integer not null,
     index_of_board_in_workspace integer not null,
     foreign key (user_id) references user_info (id),
-    foreign key (board_id) references card (id)
+    foreign key (board_id) references board (id)
 );
 
 create table user_settings

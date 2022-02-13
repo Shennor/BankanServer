@@ -24,9 +24,8 @@ open class CardEntity {
     @Column(name = "deadline")
     open var deadline: LocalDate? = null
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "creator_id", nullable = false)
-    open var creator: UserInfoEntity? = null
+    @Column(name = "creator_id", nullable = false)
+    open var creatorId: Int? = null
 
     @Column(name = "card_content", nullable = false)
     open var cardContent: String? = null

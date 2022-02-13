@@ -77,7 +77,6 @@ class Cards(val cardRepository : CardRepository,
         val cardEntity = CardEntity()
         cardEntity.name = requestBody.name
         cardEntity.color = requestBody.color
-        cardEntity.creationData = LocalDate.now()
         cardEntity.deadline = requestBody.deadline
         cardEntity.creatorId = authInfoRepository.findByEmail(
             SecurityContextHolder.getContext().authentication.principal.toString())!!.userId

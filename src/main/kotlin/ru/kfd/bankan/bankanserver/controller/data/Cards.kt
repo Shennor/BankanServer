@@ -3,86 +3,70 @@ package ru.kfd.bankan.bankanserver.controller.data
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
-import ru.kfd.bankan.bankanserver.payload.response.CardResponse
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.entity.CardEntity
 import ru.kfd.bankan.bankanserver.entity.ListToCardMappingEntity
 import ru.kfd.bankan.bankanserver.payload.request.CardCreationRequest
 import ru.kfd.bankan.bankanserver.payload.request.CardEditionRequest
-import ru.kfd.bankan.bankanserver.repository.*
+import ru.kfd.bankan.bankanserver.payload.response.asResponse
+import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
+import ru.kfd.bankan.bankanserver.repository.CardRepository
+import ru.kfd.bankan.bankanserver.repository.ListRepository
+import ru.kfd.bankan.bankanserver.repository.ListToCardMappingRepository
 import java.time.LocalDate
-import java.util.*
-import ru.kfd.bankan.bankanserver.repository.ListToCardMappingRepository as ListToCardMappingRepository
 
 @RestController
 @RequestMapping("/api/card")
-class Cards(val cardRepository : CardRepository,
-            val listRepository: ListRepository,
-            val authInfoRepository: AuthInfoRepository,
-            val listToCardMappingRepository: ListToCardMappingRepository,
-            val boardToListMappingRepository: BoardToListMappingRepository,
-            val boardToAssignedUserMappingRepository: BoardToAssignedUserMappingRepository,
-            val mapper : ObjectMapper){
-
-    fun allowed(listId : Int) : Optional<Boolean>
-    {
-        val login = SecurityContextHolder.getContext().authentication.principal
-        val creatorEntity = authInfoRepository.findByEmail(login.toString())
-            ?: return Optional.empty()
-        val creatorId = creatorEntity.userId
-        val boardListMappingEntity = boardToListMappingRepository.findByListId(listId)
-            ?: return Optional.empty()
-        val boardId = boardListMappingEntity.boardId
-        val users = boardToAssignedUserMappingRepository.getAllByBoardId(boardId)
-        if (users.find { it.userId == creatorId } == null) return Optional.of(false)
-        return Optional.of(true)
-    }
+class Cards(
+    val cardRepository: CardRepository,
+    val listRepository: ListRepository,
+    val authInfoRepository: AuthInfoRepository,
+    val listToCardMappingRepository: ListToCardMappingRepository,
+    val mapper: ObjectMapper
+) {
 
     // available for who?
     @GetMapping("/{cardId}")
-    fun getCard(@PathVariable cardId : Int): ResponseEntity<String> {
+    fun getCard(@PathVariable cardId: Int): ResponseEntity<String> {
         // check if we are allowed to get a card
-        // the board can be open
         // TODO
-
 
         // get card
         val optional = cardRepository.findById(cardId)
-        if(optional.isEmpty)
+        if (optional.isEmpty)
             return ResponseEntity<String>("This id isn't in database", HttpStatus.NOT_FOUND)
         val cardEntity = optional.get()
-        return ResponseEntity(mapper.writeValueAsString(
-            CardResponse(
-            cardEntity.id,
-            cardEntity.name,
-            cardEntity.color,
-            cardEntity.creationData,
-            cardEntity.deadline,
-            cardEntity.creatorId,
-            cardEntity.cardContent)), HttpStatus.OK);
+        return ResponseEntity(
+            mapper.writeValueAsString(
+                cardEntity.asResponse
+            ), HttpStatus.OK
+        )
     }
 
     @PostMapping("/{listId}")
-    fun createCard(@PathVariable listId : Int, @RequestBody requestBody: CardCreationRequest) : ResponseEntity<String>{
-        // check if listId exists
-        if (!listRepository.existsById(listId)) return ResponseEntity("There is no list with id $listId", HttpStatus.NOT_FOUND)
+    fun createCard(@PathVariable listId: Int, @RequestBody requestBody: CardCreationRequest): ResponseEntity<String> {
         // check if creator have permission to create a card
         if (!SecurityContextHolder.getContext().authentication.isAuthenticated) return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        val optional = allowed(listId);
-        if (optional.isEmpty) return ResponseEntity("Something went wrong",HttpStatus.INTERNAL_SERVER_ERROR)
-        if (!optional.get())
-            return ResponseEntity("You have no permissions to create a card in this list", HttpStatus.FORBIDDEN)
+        val login = SecurityContextHolder.getContext().authentication.principal
+
+        val creatorEntity = authInfoRepository.findByEmail(login.toString())
+            ?: return ResponseEntity("Something is wrong.", HttpStatus.INTERNAL_SERVER_ERROR)
+        // check if listId exists
+        if (!listRepository.existsById(listId)) return ResponseEntity(
+            "There is no list with id $listId",
+            HttpStatus.NOT_FOUND
+        )
         // creating a card
         val cardEntity = CardEntity()
         cardEntity.name = requestBody.name
         cardEntity.color = requestBody.color
+        cardEntity.creationData = LocalDate.now()
         cardEntity.deadline = requestBody.deadline
-        cardEntity.creatorId = authInfoRepository.findByEmail(
-            SecurityContextHolder.getContext().authentication.principal.toString())!!.userId
+        cardEntity.creatorId = creatorEntity.userId
         val entity = cardRepository.save(cardEntity)
         // add list to card mapping (adding card to the end of the list)
-        val mapping = ListToCardMappingEntity();
+        val mapping = ListToCardMappingEntity()
         mapping.cardId = entity.id!!
         mapping.listId = listId
         val listOfMapping = listToCardMappingRepository.getAllByListId(listId)
@@ -93,9 +77,9 @@ class Cards(val cardRepository : CardRepository,
 
     // available for who?
     @PatchMapping("/edit/{cardId}")
-    fun editCard(@PathVariable cardId: Int, @RequestBody requestBody: CardEditionRequest) : ResponseEntity<String>{
+    fun editCard(@PathVariable cardId: Int, @RequestBody requestBody: CardEditionRequest): ResponseEntity<String> {
         val optional = cardRepository.findById(cardId)
-        if(optional.isEmpty) return ResponseEntity("Card with id $cardId does not exist", HttpStatus.NOT_FOUND)
+        if (optional.isEmpty) return ResponseEntity("Card with id $cardId does not exist", HttpStatus.NOT_FOUND)
         val cardEntity = optional.get()
         if (requestBody.name != null) cardEntity.name = requestBody.name
         if (requestBody.cardContent != null) cardEntity.cardContent = requestBody.cardContent
@@ -105,10 +89,10 @@ class Cards(val cardRepository : CardRepository,
     }
 
     @DeleteMapping("/{cardId}")
-    fun deleteCard(@PathVariable cardId : Int) : ResponseEntity<String>{
+    fun deleteCard(@PathVariable cardId: Int): ResponseEntity<String> {
         try {
             cardRepository.deleteById(cardId)
-        } catch (e : Exception){
+        } catch (e: Exception) {
             return ResponseEntity("Unexpected error", HttpStatus.INTERNAL_SERVER_ERROR)
         }
         return ResponseEntity("Card with id $cardId deleted", HttpStatus.OK)

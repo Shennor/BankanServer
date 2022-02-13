@@ -8,21 +8,29 @@ import ru.kfd.bankan.bankanserver.payload.response.CardResponse
 import ru.kfd.bankan.bankanserver.repository.CardRepository
 import org.springframework.security.core.context.SecurityContextHolder
 import ru.kfd.bankan.bankanserver.entity.CardEntity
+import ru.kfd.bankan.bankanserver.entity.ListToCardMappingEntity
 import ru.kfd.bankan.bankanserver.payload.request.CardCreationRequest
 import ru.kfd.bankan.bankanserver.payload.request.CardEditionRequest
 import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
 import ru.kfd.bankan.bankanserver.repository.ListRepository
 import java.time.LocalDate
+import ru.kfd.bankan.bankanserver.repository.ListToCardMappingRepository as ListToCardMappingRepository
 
 @RestController
 @RequestMapping("/api/card")
 class Cards(val cardRepository : CardRepository,
             val listRepository: ListRepository,
             val authInfoRepository: AuthInfoRepository,
+            val listToCardMappingRepository: ListToCardMappingRepository,
             val mapper : ObjectMapper){
 
+    // available for who?
     @GetMapping("/{cardId}")
     fun getCard(@PathVariable cardId : Int): ResponseEntity<String> {
+        // check if we are allowed to get a card
+        // TODO
+
+        // get card
         val optional = cardRepository.findById(cardId)
         if(optional.isEmpty)
             return ResponseEntity<String>("This id isn't in database", HttpStatus.NOT_FOUND)
@@ -40,21 +48,33 @@ class Cards(val cardRepository : CardRepository,
 
     @PostMapping("/{listId}")
     fun createCard(@PathVariable listId : Int, @RequestBody requestBody: CardCreationRequest) : ResponseEntity<String>{
+        // check if creator have permission to create a card
+        if(!SecurityContextHolder.getContext().authentication.isAuthenticated) return ResponseEntity(HttpStatus.UNAUTHORIZED)
+        val login = SecurityContextHolder.getContext().authentication.principal
+
+        val creatorEntity = authInfoRepository.findByEmail(login.toString())
+            ?: return ResponseEntity("Something is wrong.", HttpStatus.INTERNAL_SERVER_ERROR)
+        // check if listId exists
         if (!listRepository.existsById(listId)) return ResponseEntity("There is no list with id $listId", HttpStatus.NOT_FOUND)
+        // creating a card
         val cardEntity = CardEntity()
         cardEntity.name = requestBody.name
         cardEntity.color = requestBody.color
         cardEntity.creationData = LocalDate.now()
         cardEntity.deadline = requestBody.deadline
-        if(!SecurityContextHolder.getContext().authentication.isAuthenticated) return ResponseEntity(HttpStatus.UNAUTHORIZED)
-        val login = SecurityContextHolder.getContext().authentication.principal
-        val creatorEntity = authInfoRepository.findByEmail(login.toString())
-            ?: return ResponseEntity("There is no user with login == current principal. Something is wrong.", HttpStatus.INTERNAL_SERVER_ERROR)
         cardEntity.creatorId = creatorEntity.userId
         val entity = cardRepository.save(cardEntity)
+        // add list to card mapping (adding card to the end of the list)
+        val mapping = ListToCardMappingEntity();
+        mapping.cardId = entity.id!!
+        mapping.listId = listId
+        val listOfMapping = listToCardMappingRepository.getAllByListId(listId)
+        mapping.indexOfCardInList = listOfMapping.size
+        listToCardMappingRepository.save(mapping)
         return ResponseEntity("Card created with id ${entity.id}", HttpStatus.OK)
     }
 
+    // available for who?
     @PatchMapping("/edit/{cardId}")
     fun editCard(@PathVariable cardId: Int, @RequestBody requestBody: CardEditionRequest) : ResponseEntity<String>{
         val optional = cardRepository.findById(cardId)

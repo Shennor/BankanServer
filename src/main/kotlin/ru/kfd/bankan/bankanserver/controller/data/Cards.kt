@@ -10,7 +10,7 @@ import ru.kfd.bankan.bankanserver.entity.CardEntity
 import ru.kfd.bankan.bankanserver.entity.ListToCardMappingEntity
 import ru.kfd.bankan.bankanserver.payload.request.CardCreationRequest
 import ru.kfd.bankan.bankanserver.payload.request.CardEditionRequest
-import ru.kfd.bankan.bankanserver.payload.response.CardResponse
+import ru.kfd.bankan.bankanserver.payload.response.asResponse
 import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
 import ru.kfd.bankan.bankanserver.repository.CardRepository
 import ru.kfd.bankan.bankanserver.repository.ListRepository
@@ -43,19 +43,7 @@ class Cards(
         if (optional.isEmpty)
             return ResponseEntity<String>("This id isn't in database", HttpStatus.NOT_FOUND)
         val cardEntity = optional.get()
-        return ResponseEntity(
-            mapper.writeValueAsString(
-                CardResponse(
-                    cardEntity.id,
-                    cardEntity.name,
-                    cardEntity.color,
-                    cardEntity.creationData,
-                    cardEntity.deadline,
-                    cardEntity.creatorId,
-                    cardEntity.cardContent
-                )
-            ), HttpStatus.OK
-        )
+        return ResponseEntity(mapper.writeValueAsString(cardEntity.asResponse), HttpStatus.OK)
     }
 
     @PostMapping("/{listId}")
@@ -108,6 +96,7 @@ class Cards(
         if (requestBody.cardContent != null) cardEntity.cardContent = requestBody.cardContent
         if (requestBody.changeColor) cardEntity.color = requestBody.color
         if (requestBody.changeDeadline) cardEntity.deadline = requestBody.deadline
+        cardRepository.save(cardEntity)
         return ResponseEntity("Card $cardId edited", HttpStatus.OK)
     }
 

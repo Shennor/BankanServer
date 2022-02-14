@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import ru.kfd.bankan.bankanserver.controller.AllowedTo
-import ru.kfd.bankan.bankanserver.entity.BoardEntity
-import ru.kfd.bankan.bankanserver.payload.response.CardResponse
 import ru.kfd.bankan.bankanserver.payload.response.WorkspaceResponse
 import ru.kfd.bankan.bankanserver.repository.BoardRepository
 import ru.kfd.bankan.bankanserver.repository.WorkspaceRepository

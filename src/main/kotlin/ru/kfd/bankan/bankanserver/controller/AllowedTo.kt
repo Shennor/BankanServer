@@ -87,4 +87,17 @@ class AllowedTo(
         if (!exist) return Optional.empty()
         return Optional.of(allowed)
     }
+
+    // for users
+    fun readUserInfo() : Boolean{
+        return SecurityContextHolder.getContext().authentication.isAuthenticated
+    }
+
+    fun editUserInfo(userId : Int) : Optional<Boolean>{
+        val login = SecurityContextHolder.getContext().authentication.principal
+        val creatorEntity = authInfoRepository.findByEmail(login.toString())
+            ?: return Optional.empty()
+        val currentUserId = creatorEntity.userId
+        return Optional.of(currentUserId == userId)
+    }
 }

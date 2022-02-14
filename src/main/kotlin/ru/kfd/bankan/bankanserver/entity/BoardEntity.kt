@@ -1,23 +1,49 @@
 package ru.kfd.bankan.bankanserver.entity
 
-import java.time.LocalDate
+import ru.kfd.bankan.bankanserver.entity.BoardEntity
+import java.sql.Date
 import javax.persistence.*
 
 @Entity
 @Table(name = "board")
-open class BoardEntity {
-    @Id
+class BoardEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    open var id: Int? = null
+    @Id
+    @Column(name = "id")
+    var id = 0
 
-    @Column(name = "name", nullable = false, length = 20)
-    open var name: String? = null
+    @Basic
+    @Column(name = "name")
+    var name: String? = null
 
-    @Lob
-    @Column(name = "description", nullable = false)
-    open var description: String? = null
+    @Basic
+    @Column(name = "description")
+    var description: String? = null
 
-    @Column(name = "creation_data", nullable = false)
-    open var creationData: LocalDate? = null
+    @Basic
+    @Column(name = "is_open")
+    var isOpen: Byte = 0
+
+    @Basic
+    @Column(name = "creation_data")
+    var creationData: Date? = null
+    override fun equals(o: Any?): Boolean {
+        if (this === o) return true
+        if (o == null || javaClass != o.javaClass) return false
+        val that = o as BoardEntity
+        if (id != that.id) return false
+        if (isOpen != that.isOpen) return false
+        if (if (name != null) name != that.name else that.name != null) return false
+        if (if (description != null) description != that.description else that.description != null) return false
+        return if (if (creationData != null) creationData != that.creationData else that.creationData != null) false else true
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + if (name != null) name.hashCode() else 0
+        result = 31 * result + if (description != null) description.hashCode() else 0
+        result = 31 * result + isOpen.toInt()
+        result = 31 * result + if (creationData != null) creationData.hashCode() else 0
+        return result
+    }
 }

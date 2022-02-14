@@ -65,7 +65,7 @@ create table board
     id            integer primary key auto_increment,
     name          varchar(20) not null,
     description   mediumtext  not null,
-    is_open       bool        not null default false,
+    is_open       boolean     not null default false,
     creation_data date        not null default (curdate())
 );
 

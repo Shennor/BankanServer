@@ -4,3 +4,6 @@ import org.springframework.data.repository.CrudRepository
 import ru.kfd.bankan.bankanserver.entity.BoardToListMappingEntity
 
 interface BoardToListMappingRepository : CrudRepository<BoardToListMappingEntity, Int>
+{
+    fun findByListId(listId : Int) : BoardToListMappingEntity?
+}

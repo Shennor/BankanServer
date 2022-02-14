@@ -88,13 +88,28 @@ create table board_to_assigned_user
     foreign key (board_id) references board (id)
 );
 
-create table user_to_board_mapping
+create table workspace
+(
+    id      integer primary key auto_increment,
+    name    varchar(20) not null
+);
+
+create table user_to_workspace_mapping
 (
     id                          integer primary key auto_increment,
     user_id                     integer not null,
+    workspace_id                integer not null,
+    foreign key (user_id) references user_info (id),
+    foreign key (workspace_id) references workspace (id)
+);
+
+create table workspace_to_board_mapping
+(
+    id                          integer primary key auto_increment,
+    workspace_id                integer not null,
     board_id                    integer not null,
     index_of_board_in_workspace integer not null,
-    foreign key (user_id) references user_info (id),
+    foreign key (workspace_id) references workspace (id),
     foreign key (board_id) references board (id)
 );
 

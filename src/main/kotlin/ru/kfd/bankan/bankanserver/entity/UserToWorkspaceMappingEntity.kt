@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver.entity
 
-import ru.kfd.bankan.bankanserver.entity.UserToWorkspaceMappingEntity
 import javax.persistence.*
 
 @Entity
@@ -18,13 +17,14 @@ class UserToWorkspaceMappingEntity {
     @Basic
     @Column(name = "workspace_id")
     var workspaceId = 0
+
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
         val that = o as UserToWorkspaceMappingEntity
         if (id != that.id) return false
         if (userId != that.userId) return false
-        return if (workspaceId != that.workspaceId) false else true
+        return workspaceId == that.workspaceId
     }
 
     override fun hashCode(): Int {

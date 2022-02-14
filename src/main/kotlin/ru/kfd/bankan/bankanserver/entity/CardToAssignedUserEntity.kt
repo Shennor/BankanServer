@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver.entity
 
-import ru.kfd.bankan.bankanserver.entity.CardToAssignedUserEntity
 import javax.persistence.*
 
 @Entity
@@ -24,7 +23,7 @@ class CardToAssignedUserEntity {
         val that = o as CardToAssignedUserEntity
         if (id != that.id) return false
         if (userId != that.userId) return false
-        return if (cardId != that.cardId) false else true
+        return cardId == that.cardId
     }
 
     override fun hashCode(): Int {

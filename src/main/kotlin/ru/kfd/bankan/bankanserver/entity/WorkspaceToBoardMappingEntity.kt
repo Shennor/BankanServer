@@ -1,7 +1,5 @@
 package ru.kfd.bankan.bankanserver.entity
 
-import ru.kfd.bankan.bankanserver.entity.WorkspaceEntity
-import ru.kfd.bankan.bankanserver.entity.WorkspaceToBoardMappingEntity
 import javax.persistence.*
 
 @Entity
@@ -9,7 +7,7 @@ import javax.persistence.*
 class WorkspaceToBoardMappingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     var id = 0
 
     @Basic
@@ -24,10 +22,6 @@ class WorkspaceToBoardMappingEntity {
     @Column(name = "index_of_board_in_workspace")
     var indexOfBoardInWorkspace = 0
 
-    @ManyToOne
-    @JoinColumn(name = "workspace_id", referencedColumnName = "id", nullable = false)
-    var workspaceByWorkspaceId: WorkspaceEntity? = null
-
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
@@ -35,7 +29,7 @@ class WorkspaceToBoardMappingEntity {
         if (id != that.id) return false
         if (workspaceId != that.workspaceId) return false
         if (boardId != that.boardId) return false
-        return if (indexOfBoardInWorkspace != that.indexOfBoardInWorkspace) false else true
+        return indexOfBoardInWorkspace == that.indexOfBoardInWorkspace
     }
 
     override fun hashCode(): Int {

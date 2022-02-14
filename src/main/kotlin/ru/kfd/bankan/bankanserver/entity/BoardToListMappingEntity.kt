@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver.entity
 
-import ru.kfd.bankan.bankanserver.entity.BoardToListMappingEntity
 import javax.persistence.*
 
 @Entity
@@ -29,7 +28,7 @@ class BoardToListMappingEntity {
         if (id != that.id) return false
         if (boardId != that.boardId) return false
         if (listId != that.listId) return false
-        return if (indexOfListInBoard != that.indexOfListInBoard) false else true
+        return indexOfListInBoard == that.indexOfListInBoard
     }
 
     override fun hashCode(): Int {

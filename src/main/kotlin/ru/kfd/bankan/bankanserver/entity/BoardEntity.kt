@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver.entity
 
-import ru.kfd.bankan.bankanserver.entity.BoardEntity
 import java.sql.Date
 import javax.persistence.*
 
@@ -35,7 +34,7 @@ class BoardEntity {
         if (isOpen != that.isOpen) return false
         if (if (name != null) name != that.name else that.name != null) return false
         if (if (description != null) description != that.description else that.description != null) return false
-        return if (if (creationData != null) creationData != that.creationData else that.creationData != null) false else true
+        return !if (creationData != null) creationData != that.creationData else that.creationData != null
     }
 
     override fun hashCode(): Int {

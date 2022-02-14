@@ -7,15 +7,15 @@ create table user_info
 (
     id                integer primary key auto_increment,
     name              varchar(40) not null,
-    registration_date date not null default (curdate())
+    registration_date date        not null default (curdate())
 );
 
 create table auth_info
 (
-    id                integer primary key auto_increment,
-    user_id           integer not null,
-    email             varchar(20) not null unique,
-    password_hash     varchar(60) not null,
+    id            integer primary key auto_increment,
+    user_id       integer     not null,
+    email         varchar(20) not null unique,
+    password_hash varchar(60) not null,
 
     foreign key (user_id) references user_info (id)
 );
@@ -90,15 +90,15 @@ create table board_to_assigned_user
 
 create table workspace
 (
-    id      integer primary key auto_increment,
-    name    varchar(20) not null
+    id   integer primary key auto_increment,
+    name varchar(20) not null
 );
 
 create table user_to_workspace_mapping
 (
-    id                          integer primary key auto_increment,
-    user_id                     integer not null,
-    workspace_id                integer not null,
+    id           integer primary key auto_increment,
+    user_id      integer not null,
+    workspace_id integer not null,
     foreign key (user_id) references user_info (id),
     foreign key (workspace_id) references workspace (id)
 );

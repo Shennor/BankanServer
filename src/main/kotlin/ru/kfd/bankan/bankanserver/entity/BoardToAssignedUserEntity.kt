@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver.entity
 
-import ru.kfd.bankan.bankanserver.entity.BoardToAssignedUserEntity
 import javax.persistence.*
 
 @Entity
@@ -24,7 +23,7 @@ class BoardToAssignedUserEntity {
         val that = o as BoardToAssignedUserEntity
         if (id != that.id) return false
         if (userId != that.userId) return false
-        return if (boardId != that.boardId) false else true
+        return boardId == that.boardId
     }
 
     override fun hashCode(): Int {

@@ -1,6 +1,6 @@
 package ru.kfd.bankan.bankanserver.payload.response
 
-import ru.kfd.bankan.bankanserver.entity.UserInfoEntity
+import ru.kfd.bankan.bankanserver.entity.CardEntity
 import java.time.LocalDate
 
 data class CardResponse(
@@ -11,4 +11,15 @@ data class CardResponse(
     var deadline: LocalDate? = null,
     var creatorId: Int? = null,
     var cardContent: String? = null
-);
+)
+
+val CardEntity.asResponse: CardResponse
+    get() = CardResponse(
+        id,
+        name,
+        color,
+        creationData,
+        deadline,
+        creatorId,
+        cardContent
+    )

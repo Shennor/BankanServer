@@ -78,6 +78,8 @@ class Cards(val cardRepository : CardRepository,
         return ResponseEntity("Card created with id ${entity.id}", HttpStatus.OK)
     }
 
+    // add copy changing
+
     @PatchMapping("/edit/{cardId}")
     fun editCard(@PathVariable cardId: Int, @RequestBody requestBody: CardEditionRequest) : ResponseEntity<String>{
         // check if card exists

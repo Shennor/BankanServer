@@ -12,6 +12,7 @@ class AllowedTo (val authInfoRepository: AuthInfoRepository,
                  val listToCardMappingRepository: ListToCardMappingRepository,
                  val boardRepository: BoardRepository
 ){
+
     fun writeByBoardId(boardId : Int) : Optional<Boolean>
     {
         val login = SecurityContextHolder.getContext().authentication.principal

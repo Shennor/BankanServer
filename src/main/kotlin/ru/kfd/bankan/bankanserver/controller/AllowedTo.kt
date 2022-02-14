@@ -11,7 +11,8 @@ class AllowedTo(
     val boardToAssignedUserMappingRepository: BoardToAssignedUserMappingRepository,
     val boardToListMappingRepository: BoardToListMappingRepository,
     val listToCardMappingRepository: ListToCardMappingRepository,
-    val boardRepository: BoardRepository
+    val boardRepository: BoardRepository,
+    val userToWorkspaceMappingRepository : UserToWorkspaceMappingRepository
 ) {
 
     fun writeByBoardId(boardId: Int): Optional<Boolean> {
@@ -42,6 +43,16 @@ class AllowedTo(
             if (!optional.get()) Optional.of(false)
         }
         return Optional.of(true)
+    }
+
+    fun readByWorkspaceId(workspaceId : Int): Optional<Boolean>{
+        val login = SecurityContextHolder.getContext().authentication.principal
+        val creatorEntity = authInfoRepository.findByEmail(login.toString())
+            ?: return Optional.empty()
+        val userId = creatorEntity.userId
+        val mapping = userToWorkspaceMappingRepository.findByWorkspaceId(workspaceId)
+        if (mapping.isEmpty) return Optional.empty()
+        return Optional.of(mapping.get().userId == userId)
     }
 
     fun readByBoardId(boardId: Int): Optional<Boolean> {

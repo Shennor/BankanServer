@@ -43,10 +43,9 @@ class Lists(
             cardRepository.findByIdOrNull(it.cardId)!!.asResponse
         })
 
-    @PatchMapping("{id}/edit/{property}")
+    @PatchMapping("edit/{id}")
     fun updateListProperty(
         @PathVariable id: Int,
-        @PathVariable property: String,
         @RequestBody patch: ListPatchRequest
     ) {
         val old = listRepository.findByIdOrNull(id)

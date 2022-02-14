@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.controller.AllowedTo
-import ru.kfd.bankan.bankanserver.payload.request.UserNameUpdateRequest
+import ru.kfd.bankan.bankanserver.payload.request.UserInfoPatchRequest
 import ru.kfd.bankan.bankanserver.payload.response.asResponse
 import ru.kfd.bankan.bankanserver.repository.UserInfoRepository
 
@@ -30,7 +30,7 @@ class Users(
     @PatchMapping("/{userId}")
     fun updateUserInfo(
         @PathVariable userId: Int,
-        @RequestBody(required = true) request: UserNameUpdateRequest
+        @RequestBody(required = true) request: UserInfoPatchRequest
     ): ResponseEntity<String> {
         // check existence
         val userOptional = userInfoRepository.findById(userId)

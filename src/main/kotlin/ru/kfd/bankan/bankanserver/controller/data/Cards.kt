@@ -9,7 +9,7 @@ import ru.kfd.bankan.bankanserver.controller.AllowedTo
 import ru.kfd.bankan.bankanserver.entity.CardEntity
 import ru.kfd.bankan.bankanserver.entity.ListToCardMappingEntity
 import ru.kfd.bankan.bankanserver.payload.request.CardCreationRequest
-import ru.kfd.bankan.bankanserver.payload.request.CardEditionRequest
+import ru.kfd.bankan.bankanserver.payload.request.CardPatchRequest
 import ru.kfd.bankan.bankanserver.payload.response.asResponse
 import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
 import ru.kfd.bankan.bankanserver.repository.CardRepository
@@ -81,7 +81,7 @@ class Cards(
     // add copy changing
 
     @PatchMapping("/edit/{cardId}")
-    fun editCard(@PathVariable cardId: Int, @RequestBody requestBody: CardEditionRequest): ResponseEntity<String> {
+    fun editCard(@PathVariable cardId: Int, @RequestBody requestBody: CardPatchRequest): ResponseEntity<String> {
         // check if card exists
         val optionalCard = cardRepository.findById(cardId)
         if (optionalCard.isEmpty) return ResponseEntity("Card with id $cardId does not exist", HttpStatus.NOT_FOUND)

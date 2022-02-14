@@ -2,7 +2,7 @@ package ru.kfd.bankan.bankanserver.payload.request
 
 import java.time.LocalDate
 
-data class CardEditionRequest(
+data class CardPatchRequest(
     var name: String? = null,
     var changeColor: Boolean = false,
     var color: Int? = null,

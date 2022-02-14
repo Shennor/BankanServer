@@ -1,5 +1,5 @@
 package ru.kfd.bankan.bankanserver.payload.request
 
-data class UserNameUpdateRequest (
+data class UserInfoPatchRequest (
     val name : String? = null
 )

@@ -71,12 +71,11 @@ class Cards(
 
         val entity = cardRepository.save(cardEntity)
         // add list to card mapping (adding card to the end of the list)
-        val listOfMapping = listToCardMappingRepository.getAllByListId(listId)
 
         val mapping = ListToCardMappingEntity(
             cardId = entity.id!!,
             listId = listId,
-            indexOfCardInList = listOfMapping.size
+            indexOfCardInList = listToCardMappingRepository.countListToCardMappingEntitiesByListId(listId)
         )
 
         listToCardMappingRepository.save(mapping)

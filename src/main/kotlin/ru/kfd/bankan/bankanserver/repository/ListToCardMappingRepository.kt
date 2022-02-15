@@ -9,8 +9,5 @@ interface ListToCardMappingRepository : CrudRepository<ListToCardMappingEntity, 
     fun existsByListIdAndCardId(listId: Int, cardId: Int): Boolean
     fun deleteByListIdAndCardId(listId: Int, cardId: Int)
     fun deleteAllByCardId(cardId: Int)
-    fun getAllByListIdEqualsAndAndIndexOfCardInListGreaterThanEqual(
-        listId: Int,
-        index: Int
-    ): MutableList<ListToCardMappingEntity>
+    fun countListToCardMappingEntitiesByListId(listId: Int): Int
 }

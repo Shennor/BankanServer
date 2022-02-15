@@ -58,7 +58,7 @@ class AllowedTo(
     fun readByBoardId(boardId: Int): Optional<Boolean> {
         val boardEntity = boardRepository.findById(boardId)
         if (boardEntity.isEmpty) return Optional.empty()
-        if (boardEntity.get().isOpen != 0.toByte()) return Optional.of(true)
+        if (boardEntity.get().isOpen) return Optional.of(true)
         return writeByBoardId(boardId)
     }
 

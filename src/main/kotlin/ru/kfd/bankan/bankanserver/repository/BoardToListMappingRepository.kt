@@ -5,4 +5,5 @@ import ru.kfd.bankan.bankanserver.entity.BoardToListMappingEntity
 
 interface BoardToListMappingRepository : CrudRepository<BoardToListMappingEntity, Int> {
     fun findByListId(listId: Int): BoardToListMappingEntity?
+    fun findBoardToListMappingEntitiesByBoardId(boardId: Int): List<BoardToListMappingEntity>
 }

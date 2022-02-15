@@ -8,6 +8,7 @@ import ru.kfd.bankan.bankanserver.payload.request.ListRequest
 import ru.kfd.bankan.bankanserver.payload.request.asEntity
 import ru.kfd.bankan.bankanserver.payload.response.ListContentResponse
 import ru.kfd.bankan.bankanserver.payload.response.ListInfoResponse
+import ru.kfd.bankan.bankanserver.payload.response.asListInfoResponse
 import ru.kfd.bankan.bankanserver.payload.response.asResponse
 import ru.kfd.bankan.bankanserver.repository.BoardToListMappingRepository
 import ru.kfd.bankan.bankanserver.repository.CardRepository
@@ -32,16 +33,16 @@ class Lists(
     }
 
     @GetMapping("/info/{id}")
-    fun readInfo(@PathVariable id: Int) =
-        listRepository.findByIdOrNull(id)?.run {
-            ListInfoResponse(name!!, description!!)
-        }
+    fun readInfo(@PathVariable id: Int): ListInfoResponse {
+        return listRepository.findByIdOrNull(id)!!.asListInfoResponse
+    }
 
     @GetMapping("/{id}")
-    fun readListContent(@PathVariable id: Int) =
-        ListContentResponse(listToCardMappingRepository.getAllByListId(id).map {
+    fun readListContent(@PathVariable id: Int): ListContentResponse {
+        return ListContentResponse(listToCardMappingRepository.getAllByListId(id).map {
             cardRepository.findByIdOrNull(it.cardId)!!.asResponse
         })
+    }
 
     @PatchMapping("/edit/{id}")
     fun updateListProperty(

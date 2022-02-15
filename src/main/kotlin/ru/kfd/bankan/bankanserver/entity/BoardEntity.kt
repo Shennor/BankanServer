@@ -12,20 +12,21 @@ class BoardEntity {
     var id = 0
 
     @Basic
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     var name: String? = null
 
     @Basic
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     var description: String? = null
 
     @Basic
-    @Column(name = "is_open")
-    var isOpen: Byte = 0
+    @Column(name = "is_open", nullable = false)
+    var isOpen: Boolean = false
 
     @Basic
     @Column(name = "creation_data")
     var creationData: Date? = null
+
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
@@ -41,7 +42,7 @@ class BoardEntity {
         var result = id
         result = 31 * result + if (name != null) name.hashCode() else 0
         result = 31 * result + if (description != null) description.hashCode() else 0
-        result = 31 * result + isOpen.toInt()
+        result = 31 * result + if (isOpen) 1 else 0
         result = 31 * result + if (creationData != null) creationData.hashCode() else 0
         return result
     }

@@ -1,7 +1,9 @@
 package ru.kfd.bankan.bankanserver.controller.data
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.*
+import ru.kfd.bankan.bankanserver.controller.safeFindById
+import ru.kfd.bankan.bankanserver.controller.updateWithIfNotNull
+import ru.kfd.bankan.bankanserver.entity.WorkspaceToBoardMappingEntity
 import ru.kfd.bankan.bankanserver.payload.request.BoardCreateRequest
 import ru.kfd.bankan.bankanserver.payload.request.BoardUpdateRequest
 import ru.kfd.bankan.bankanserver.payload.request.asEntity
@@ -27,36 +29,52 @@ class Boards(
     @PostMapping("/{workspaceId}")
     fun create(@PathVariable workspaceId: Int, @RequestBody body: BoardCreateRequest) {
         // TODO("check workspace accessibility")
-        boardRepository.save(body.asEntity)
+        val boardEntity = boardRepository.save(body.asEntity)
+        workspaceToBoardMappingRepository.save(
+            WorkspaceToBoardMappingEntity(
+                workspaceId = workspaceId,
+                boardId = boardEntity.id,
+                indexOfBoardInWorkspace = workspaceToBoardMappingRepository.countWorkspaceToBoardMappingEntitiesByWorkspaceId(
+                    workspaceId
+                )
+            )
+        )
     }
 
     @GetMapping("/info/{boardId}")
     fun readInfo(@PathVariable boardId: Int): BoardInfoResponse {
         // TODO("check board accessibility")
-        return boardRepository.getById(boardId).asResponse
+        boardRepository
+        return boardRepository.safeFindById(boardId).asResponse
     }
 
     @GetMapping("/{boardId}")
     fun read(@PathVariable boardId: Int): List<Pair<Int, ListInfoResponse>> {
         // TODO("check board accessibility")
         return boardToListMappingRepository.findBoardToListMappingEntitiesByBoardId(boardId).map {
-            it.listId to listRepository.findByIdOrNull(it.listId)!!.asListInfoResponse
+            it.listId to listRepository.safeFindById(it.listId).asListInfoResponse
         }
     }
 
     @GetMapping("/edit/{boardId}")
     fun update(@PathVariable boardId: Int, @RequestBody body: BoardUpdateRequest) {
         // TODO("check board accessibility")
-        val enitty = boardRepository.findByIdOrNull(boardId)!!
-        if (body.name != null) enitty.name = body.name
-        if (body.description != null) enitty.description = body.description
-        boardRepository.save(enitty)
+        val entity = boardRepository.safeFindById(boardId)
+
+
+        entity updateWithIfNotNull body
+////        entity.name = body.name ?: entity.name
+//        if (body.name != null) entity.name = body.name
+//        if (body.description != null) entity.description = body.description
+        boardRepository.save(entity)
     }
+
 
     @GetMapping("/delete/{boardId}")
     fun delete(@PathVariable boardId: Int) {
         // TODO("check board accessibility")
         boardRepository.deleteById(boardId)
-        // TODO("delete mappings and nested structures")
+        workspaceToBoardMappingRepository.deleteWorkspaceToBoardMappingEntityByBoardId(boardId)
+        // TODO("delete nested structures")
     }
 }

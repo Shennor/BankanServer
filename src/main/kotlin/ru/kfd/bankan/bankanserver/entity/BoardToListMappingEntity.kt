@@ -4,7 +4,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "board_to_list_mapping")
-open class BoardToListMappingEntity (
+open class BoardToListMappingEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -12,15 +12,15 @@ open class BoardToListMappingEntity (
 
     @Basic
     @Column(name = "board_id", nullable = false)
-    var boardId: Int = 0,
+    var boardId: Int,
 
     @Basic
     @Column(name = "list_id", nullable = false)
-    var listId: Int = 0,
+    var listId: Int,
 
     @Basic
     @Column(name = "index_of_list_in_board", nullable = false)
-    var indexOfListInBoard: Int = 0,
+    var indexOfListInBoard: Int,
 ) {
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

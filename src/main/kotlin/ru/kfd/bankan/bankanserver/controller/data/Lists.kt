@@ -1,7 +1,8 @@
 package ru.kfd.bankan.bankanserver.controller.data
 
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.*
+import ru.kfd.bankan.bankanserver.controller.safeFindById
+import ru.kfd.bankan.bankanserver.controller.updateWithIfNotNull
 import ru.kfd.bankan.bankanserver.entity.BoardToListMappingEntity
 import ru.kfd.bankan.bankanserver.payload.request.ListPatchRequest
 import ru.kfd.bankan.bankanserver.payload.request.ListRequest
@@ -26,21 +27,23 @@ class Lists(
     @PostMapping("/{boardId}")
     fun create(@PathVariable boardId: Int, @RequestBody listRequest: ListRequest) {
         val list = listRepository.save(listRequest.asEntity)
-        val mapping = BoardToListMappingEntity()
-        mapping.boardId = boardId
-        mapping.listId = list.id!!
+        val mapping = BoardToListMappingEntity(
+            boardId = boardId,
+            listId = list.id,
+            indexOfListInBoard = boardToListMappingRepository.countBoardToListMappingEntitiesByBoardId(boardId)
+        )
         boardToListMappingRepository.save(mapping)
     }
 
     @GetMapping("/info/{id}")
     fun readInfo(@PathVariable id: Int): ListInfoResponse {
-        return listRepository.findByIdOrNull(id)!!.asListInfoResponse
+        return listRepository.safeFindById(id).asListInfoResponse
     }
 
     @GetMapping("/{id}")
     fun readListContent(@PathVariable id: Int): ListContentResponse {
         return ListContentResponse(listToCardMappingRepository.getAllByListId(id).map {
-            cardRepository.findByIdOrNull(it.cardId)!!.asResponse
+            cardRepository.safeFindById(it.cardId).asResponse
         })
     }
 
@@ -49,14 +52,11 @@ class Lists(
         @PathVariable id: Int,
         @RequestBody patch: ListPatchRequest
     ) {
-        val old = listRepository.findByIdOrNull(id)
-        if (old != null) {
-            if (patch.name != null)
-                old.name = patch.name
-            if (patch.description != null)
-                old.description = patch.description
-            listRepository.save(old)
-        }
+        val old = listRepository.safeFindById(id)
+        old updateWithIfNotNull patch
+//        if (patch.name != null) old.name = patch.name
+//        if (patch.description != null) old.description = patch.description
+        listRepository.save(old)
     }
 
     @DeleteMapping("/{id}")

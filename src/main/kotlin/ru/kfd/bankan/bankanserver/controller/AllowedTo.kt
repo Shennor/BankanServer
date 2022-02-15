@@ -1,9 +1,13 @@
 package ru.kfd.bankan.bankanserver.controller
 
+import org.springframework.data.repository.CrudRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import ru.kfd.bankan.bankanserver.repository.*
 import java.util.*
+import kotlin.reflect.KMutableProperty
+import kotlin.reflect.full.memberProperties
 
 @Component
 class AllowedTo(
@@ -12,7 +16,7 @@ class AllowedTo(
     val boardToListMappingRepository: BoardToListMappingRepository,
     val listToCardMappingRepository: ListToCardMappingRepository,
     val boardRepository: BoardRepository,
-    val userToWorkspaceMappingRepository : UserToWorkspaceMappingRepository
+    val userToWorkspaceMappingRepository: UserToWorkspaceMappingRepository
 ) {
 
     fun writeByBoardId(boardId: Int): Optional<Boolean> {
@@ -45,7 +49,7 @@ class AllowedTo(
         return Optional.of(true)
     }
 
-    fun readByWorkspaceId(workspaceId : Int): Optional<Boolean>{
+    fun readByWorkspaceId(workspaceId: Int): Optional<Boolean> {
         val login = SecurityContextHolder.getContext().authentication.principal
         val creatorEntity = authInfoRepository.findByEmail(login.toString())
             ?: return Optional.empty()
@@ -89,15 +93,34 @@ class AllowedTo(
     }
 
     // for users
-    fun readUserInfo() : Boolean{
+    fun readUserInfo(): Boolean {
         return SecurityContextHolder.getContext().authentication.isAuthenticated
     }
 
-    fun editUserInfo(userId : Int) : Optional<Boolean>{
+    fun editUserInfo(userId: Int): Optional<Boolean> {
         val login = SecurityContextHolder.getContext().authentication.principal
         val creatorEntity = authInfoRepository.findByEmail(login.toString())
             ?: return Optional.empty()
         val currentUserId = creatorEntity.userId
         return Optional.of(currentUserId == userId)
+    }
+}
+
+inline fun <reified Entity, Num> CrudRepository<Entity, Num>.safeFindById(
+    id: Num,
+    block: ((entity: Entity) -> Entity) = { it }
+): Entity {
+    val entity = findByIdOrNull(id) ?: throw IdNotFoundException("id = $id not found in ${Entity::class.simpleName}")
+    return block(entity)
+}
+
+class IdNotFoundException(message: String) : RuntimeException(message)
+
+inline infix fun <reified T : Any, reified R : Any> T.updateWithIfNotNull(other: R) {
+    other::class.memberProperties.forEach { rightProp ->
+        val leftProp = this::class.memberProperties.find { it.name == rightProp.name }!!
+        if (leftProp is KMutableProperty<*>) {
+            leftProp.setter.call(this, rightProp.getter.call(other))
+        }
     }
 }

@@ -9,7 +9,7 @@ class ListEntity(
     @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int? = null,
+    var id: Int = 0,
 
     @Column(name = "name", nullable = false)
     @Basic

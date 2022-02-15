@@ -7,11 +7,11 @@ import javax.persistence.*
 class WorkspaceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     var id = 0
 
     @Basic
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     var name: String? = null
 
     override fun equals(o: Any?): Boolean {

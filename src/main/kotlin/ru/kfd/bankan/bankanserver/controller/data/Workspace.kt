@@ -17,17 +17,20 @@ import ru.kfd.bankan.bankanserver.repository.WorkspaceToBoardMappingRepository
 @RequestMapping("/api/workspace")
 @RestController
 class Workspace(
-    val workspaceRepository : WorkspaceRepository,
+    val workspaceRepository: WorkspaceRepository,
     val workspaceToBoardMappingRepository: WorkspaceToBoardMappingRepository,
     val boardRepository: BoardRepository,
     val allowedTo: AllowedTo,
     val mapper: ObjectMapper
-){
+) {
     @GetMapping("/{workspaceId}")
-    fun getWorkspace(@PathVariable workspaceId : Int) : ResponseEntity<String>{
+    fun getWorkspace(@PathVariable workspaceId: Int): ResponseEntity<String> {
         // check if workspaceId exists
         val workspaceOptional = workspaceRepository.findById(workspaceId)
-        if (workspaceOptional.isEmpty) return ResponseEntity("Workspace with id $workspaceId does not exist", HttpStatus.NOT_FOUND)
+        if (workspaceOptional.isEmpty) return ResponseEntity(
+            "Workspace with id $workspaceId does not exist",
+            HttpStatus.NOT_FOUND
+        )
         // check if user have permission to read workspace (it's their)
         val optional = allowedTo.readByWorkspaceId(workspaceId)
         if (optional.isEmpty) return ResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
@@ -35,11 +38,14 @@ class Workspace(
         // read
         val workspaceEntity = workspaceOptional.get()
         val mappingList = workspaceToBoardMappingRepository.findAllByWorkspaceId(workspaceId)
-        return ResponseEntity(mapper.writeValueAsString(
-            WorkspaceResponse(
-                workspaceEntity.id,
-                workspaceEntity.name!!,
-                (mappingList.map { boardRepository.getById(it.boardId) }).toMutableList()
-        )), HttpStatus.OK);
+        return ResponseEntity(
+            mapper.writeValueAsString(
+                WorkspaceResponse(
+                    workspaceEntity.id,
+                    workspaceEntity.name!!,
+                    (mappingList.map { boardRepository.getById(it.boardId) }).toList()
+                )
+            ), HttpStatus.OK
+        )
     }
 }

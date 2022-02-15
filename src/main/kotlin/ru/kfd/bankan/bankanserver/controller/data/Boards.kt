@@ -12,12 +12,14 @@ import ru.kfd.bankan.bankanserver.payload.response.asResponse
 import ru.kfd.bankan.bankanserver.repository.BoardRepository
 import ru.kfd.bankan.bankanserver.repository.BoardToListMappingRepository
 import ru.kfd.bankan.bankanserver.repository.ListRepository
+import ru.kfd.bankan.bankanserver.repository.WorkspaceToBoardMappingRepository
 
 
 // TODO
 @RequestMapping("/api/board/")
 @RestController
 class Boards(
+    val workspaceToBoardMappingRepository: WorkspaceToBoardMappingRepository,
     val boardRepository: BoardRepository,
     val boardToListMappingRepository: BoardToListMappingRepository,
     val listRepository: ListRepository
@@ -25,7 +27,6 @@ class Boards(
     @PostMapping("/{workspaceId}")
     fun create(@PathVariable workspaceId: Int, @RequestBody body: BoardCreateRequest) {
         // TODO("check workspace accessibility")
-        // TODO("add mappings")
         boardRepository.save(body.asEntity)
     }
 

@@ -5,28 +5,28 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "board")
-class BoardEntity {
+class BoardEntity (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
-    var id = 0
+    var id: Int = 0,
 
     @Basic
     @Column(name = "name", nullable = false)
-    var name: String? = null
+    var name: String? = null,
 
     @Basic
     @Column(name = "description", nullable = false)
-    var description: String? = null
+    var description: String? = null,
 
     @Basic
     @Column(name = "is_open", nullable = false)
-    var isOpen: Boolean = false
+    var isOpen: Boolean = false,
 
     @Basic
-    @Column(name = "creation_data")
+    @Column(name = "creation_data", nullable = false)
     var creationData: Date? = null
-
+) {
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false

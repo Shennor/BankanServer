@@ -4,24 +4,24 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "workspace_to_board_mapping")
-class WorkspaceToBoardMappingEntity {
+class WorkspaceToBoardMappingEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
-    var id = 0
+    var id: Int = 0,
 
     @Basic
-    @Column(name = "workspace_id")
-    var workspaceId = 0
+    @Column(name = "workspace_id", nullable = false)
+    var workspaceId: Int,
 
     @Basic
-    @Column(name = "board_id")
-    var boardId = 0
+    @Column(name = "board_id", nullable = false)
+    var boardId: Int,
 
     @Basic
-    @Column(name = "index_of_board_in_workspace")
-    var indexOfBoardInWorkspace = 0
-
+    @Column(name = "index_of_board_in_workspace", nullable = false)
+    var indexOfBoardInWorkspace: Int
+) {
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false

@@ -4,19 +4,20 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "board_to_assigned_user")
-class BoardToAssignedUserEntity {
+class BoardToAssignedUserEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
-    var id = 0
+    var id: Int = 0,
 
     @Basic
-    @Column(name = "user_id")
-    var userId = 0
+    @Column(name = "user_id", nullable = false)
+    var userId: Int = 0,
 
     @Basic
-    @Column(name = "board_id")
-    var boardId = 0
+    @Column(name = "board_id", nullable = false)
+    var boardId: Int = 0
+) {
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false

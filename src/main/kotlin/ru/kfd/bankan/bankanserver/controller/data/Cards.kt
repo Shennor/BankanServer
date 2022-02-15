@@ -60,20 +60,25 @@ class Cards(
         if (!optional.get())
             return ResponseEntity("You have no permissions to create a card in this list", HttpStatus.FORBIDDEN)
         // creating a card
-        val cardEntity = CardEntity()
-        cardEntity.name = requestBody.name
-        cardEntity.color = requestBody.color
-        cardEntity.deadline = requestBody.deadline
-        cardEntity.creatorId = authInfoRepository.findByEmail(
-            SecurityContextHolder.getContext().authentication.principal.toString()
-        )!!.userId
+        val cardEntity = CardEntity(
+            name = requestBody.name,
+            color = requestBody.color,
+            deadline = requestBody.deadline,
+            creatorId = authInfoRepository.findByEmail(
+                SecurityContextHolder.getContext().authentication.principal.toString()
+            )!!.userId
+        )
+
         val entity = cardRepository.save(cardEntity)
         // add list to card mapping (adding card to the end of the list)
-        val mapping = ListToCardMappingEntity()
-        mapping.cardId = entity.id!!
-        mapping.listId = listId
         val listOfMapping = listToCardMappingRepository.getAllByListId(listId)
-        mapping.indexOfCardInList = listOfMapping.size
+
+        val mapping = ListToCardMappingEntity(
+            cardId = entity.id!!,
+            listId = listId,
+            indexOfCardInList = listOfMapping.size
+        )
+
         listToCardMappingRepository.save(mapping)
         return ResponseEntity("Card created with id ${entity.id}", HttpStatus.OK)
     }

@@ -5,27 +5,27 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "card")
-open class CardEntity {
+open class CardEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    open var id: Int? = null
+    var id: Int? = null,
 
     @Column(name = "name", nullable = false, length = 20)
-    open var name: String? = null
+    var name: String? = null,
 
     @Column(name = "color", nullable = false)
-    open var color: Int? = null
+    var color: Int? = null,
 
     @Column(name = "creation_data", nullable = false)
-    open var creationData: LocalDate? = null
+    var creationData: LocalDate? = null,
 
     @Column(name = "deadline")
-    open var deadline: LocalDate? = null
+    var deadline: LocalDate? = null,
 
     @Column(name = "creator_id", nullable = false)
-    open var creatorId: Int? = null
+    var creatorId: Int? = null,
 
     @Column(name = "card_content", nullable = false)
-    open var cardContent: String? = null
-}
+    var cardContent: String? = null
+)

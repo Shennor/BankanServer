@@ -1,22 +1,21 @@
 package ru.kfd.bankan.bankanserver.entity
 
-import ru.kfd.bankan.bankanserver.entity.UserSettingsEntity
 import javax.persistence.*
 
 @Entity
 @Table(name = "user_settings")
-class UserSettingsEntity {
+class UserSettingsEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
-    var id = 0
+    var id: Int = 0,
 
-    @Column(name = "user_id")
-    var userId = 0
+    @Column(name = "user_id", nullable = false)
+    var userId: Int = 0,
 
-    @Column(name = "settings")
+    @Column(name = "settings", nullable = false)
     var settings: String? = null
-
+) {
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false

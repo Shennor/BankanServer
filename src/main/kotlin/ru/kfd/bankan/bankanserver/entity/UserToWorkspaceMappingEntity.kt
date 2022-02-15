@@ -4,20 +4,20 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "user_to_workspace_mapping")
-class UserToWorkspaceMappingEntity {
+class UserToWorkspaceMappingEntity (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
-    var id = 0
+    var id: Int = 0,
 
     @Basic
-    @Column(name = "user_id")
-    var userId = 0
+    @Column(name = "user_id", nullable = false)
+    var userId: Int,
 
     @Basic
-    @Column(name = "workspace_id")
-    var workspaceId = 0
-
+    @Column(name = "workspace_id", nullable = false)
+    var workspaceId: Int,
+) {
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false

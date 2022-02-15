@@ -2,8 +2,10 @@ package ru.kfd.bankan.bankanserver.controller
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
+import org.springframework.web.bind.annotation.ResponseStatus
 import ru.kfd.bankan.bankanserver.repository.*
 import java.util.*
 import kotlin.reflect.KMutableProperty
@@ -114,6 +116,7 @@ inline fun <reified Entity, Num> CrudRepository<Entity, Num>.safeFindById(
     return block(entity)
 }
 
+@ResponseStatus(HttpStatus.NOT_FOUND)
 class IdNotFoundException(message: String) : RuntimeException(message)
 
 inline infix fun <reified T : Any, reified R : Any> T.updateWithIfNotNull(other: R) {

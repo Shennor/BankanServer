@@ -15,14 +15,14 @@ import ru.kfd.bankan.bankanserver.repository.ListRepository
 import ru.kfd.bankan.bankanserver.repository.ListToCardMappingRepository
 
 @RestController
-@RequestMapping("api/list/")
+@RequestMapping("/api/list/")
 class Lists(
     val listRepository: ListRepository,
     val listToCardMappingRepository: ListToCardMappingRepository,
     val boardToListMappingRepository: BoardToListMappingRepository,
     val cardRepository: CardRepository
 ) {
-    @PostMapping("{boardId}")
+    @PostMapping("/{boardId}")
     fun create(@PathVariable boardId: Int, @RequestBody listRequest: ListRequest) {
         val list = listRepository.save(listRequest.asEntity)
         val mapping = BoardToListMappingEntity()
@@ -31,19 +31,19 @@ class Lists(
         boardToListMappingRepository.save(mapping)
     }
 
-    @GetMapping("info/{id}")
+    @GetMapping("/info/{id}")
     fun readInfo(@PathVariable id: Int) =
         listRepository.findByIdOrNull(id)?.run {
             ListInfoResponse(name!!, description!!)
         }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     fun readListContent(@PathVariable id: Int) =
         ListContentResponse(listToCardMappingRepository.getAllByListId(id).map {
             cardRepository.findByIdOrNull(it.cardId)!!.asResponse
         })
 
-    @PatchMapping("edit/{id}")
+    @PatchMapping("/edit/{id}")
     fun updateListProperty(
         @PathVariable id: Int,
         @RequestBody patch: ListPatchRequest
@@ -58,7 +58,7 @@ class Lists(
         }
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Int) {
         listRepository.deleteById(id)
     }

@@ -1,5 +1,8 @@
 package ru.kfd.bankan.bankanserver.payload.request
 
-data class SettingsPatchRequest (
-    val settings : Any?
-)
+
+typealias SettingsPatchRequest = String
+
+//data class SettingsPatchRequest(
+//    val settings: String?
+//)

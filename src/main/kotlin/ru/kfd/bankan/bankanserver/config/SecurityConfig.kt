@@ -25,11 +25,13 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     lateinit var userDetailsService: UserDetailsServiceImpl
 
     @Autowired
-    private val unauthorizedHandler: AuthEntryPointJwt? = null
+    lateinit var unauthorizedHandler: AuthEntryPointJwt
+
+    @Autowired
+    lateinit var jwtUtils: JwtUtils
 
     @Bean
     fun authenticationJwtTokenFilter(): AuthTokenFilter? {
-        val jwtUtils = JwtUtils()
         return AuthTokenFilter(jwtUtils, userDetailsService)
     }
 

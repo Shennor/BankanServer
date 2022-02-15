@@ -4,7 +4,7 @@ import ru.kfd.bankan.bankanserver.entity.UserSettingsEntity
 import javax.persistence.*
 
 @Entity
-@Table(name = "user_settings", schema = "bankan", catalog = "")
+@Table(name = "user_settings")
 class UserSettingsEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -15,7 +15,7 @@ class UserSettingsEntity {
     var userId = 0
 
     @Column(name = "settings")
-    var settings: Any? = null
+    var settings: String? = null
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true

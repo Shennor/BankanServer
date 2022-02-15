@@ -46,7 +46,7 @@ class Settings(
         // change
         val settingsEntity = userSettingsRepository.findByUserId(userId)
             ?: return ResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
-        if(request.settings != null) settingsEntity.settings = request.settings
+        settingsEntity.settings = request
         userSettingsRepository.save(settingsEntity)
         return ResponseEntity("Settings changed", HttpStatus.OK)
     }

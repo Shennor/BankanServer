@@ -11,10 +11,10 @@ import java.util.*
 @Component
 class JwtUtils {
     @Value("\${bankan.app.jwtSecret}")
-    private val jwtSecret: String? = null
+    private val jwtSecret: String = ""
 
     @Value("\${bankan.app.jwtExpirationMs}")
-    private val jwtExpirationMs = 0
+    private val jwtExpirationMs: Long = 0
 
     fun generateJwtToken(authentication: Authentication): String {
         val userPrincipal = authentication.principal as UserDetailsImpl

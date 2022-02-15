@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver.config
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
@@ -14,26 +13,15 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import ru.kfd.bankan.bankanserver.AuthEntryPointJwt
 import ru.kfd.bankan.bankanserver.AuthTokenFilter
-import ru.kfd.bankan.bankanserver.JwtUtils
 import ru.kfd.bankan.bankanserver.service.UserDetailsServiceImpl
 
 
 @EnableWebSecurity
-class SecurityConfig : WebSecurityConfigurerAdapter() {
-
-    @Autowired
-    lateinit var userDetailsService: UserDetailsServiceImpl
-
-    @Autowired
-    lateinit var unauthorizedHandler: AuthEntryPointJwt
-
-    @Autowired
-    lateinit var jwtUtils: JwtUtils
-
-    @Bean
-    fun authenticationJwtTokenFilter(): AuthTokenFilter? {
-        return AuthTokenFilter(jwtUtils, userDetailsService)
-    }
+class SecurityConfig(
+    val userDetailsService: UserDetailsServiceImpl,
+    val unauthorizedHandler: AuthEntryPointJwt,
+    val authTokenFilter: AuthTokenFilter,
+) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable()
@@ -61,8 +49,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
             .and().logout()
             .logoutSuccessUrl("/home")
 
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter::class.java)
-
+        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter::class.java)
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {

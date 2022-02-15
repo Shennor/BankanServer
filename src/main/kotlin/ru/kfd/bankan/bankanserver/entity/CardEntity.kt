@@ -9,7 +9,7 @@ open class CardEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    var id: Int? = null,
+    var id: Int = 0,
 
     @Column(name = "name", nullable = false, length = 20)
     var name: String? = null,

@@ -6,10 +6,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.controller.AllowedTo
-import ru.kfd.bankan.bankanserver.entity.CardEntity
+import ru.kfd.bankan.bankanserver.controller.safeFindById
 import ru.kfd.bankan.bankanserver.entity.ListToCardMappingEntity
 import ru.kfd.bankan.bankanserver.payload.request.CardCreationRequest
 import ru.kfd.bankan.bankanserver.payload.request.CardPatchRequest
+import ru.kfd.bankan.bankanserver.payload.request.asEntity
 import ru.kfd.bankan.bankanserver.payload.response.asResponse
 import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
 import ru.kfd.bankan.bankanserver.repository.CardRepository
@@ -30,29 +31,23 @@ class Cards(
     // available for who?
     @GetMapping("/{cardId}")
     fun getCard(@PathVariable cardId: Int): ResponseEntity<String> {
-        // check if card exists
-        val optionalCard = cardRepository.findById(cardId)
-        if (optionalCard.isEmpty) return ResponseEntity("Card with id $cardId does not exist", HttpStatus.NOT_FOUND)
+        // check if card exists and get
+        val cardEntity = cardRepository.safeFindById(cardId)
+
         // check if user have permission to get this card
         val optionalBool = allowedTo.readByCardId(cardId)
         if (optionalBool.isEmpty) return ResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
         if (!optionalBool.get())
             return ResponseEntity("You have no permissions to read this card", HttpStatus.FORBIDDEN)
-        // get card
-        val optional = cardRepository.findById(cardId)
-        if (optional.isEmpty)
-            return ResponseEntity<String>("This id isn't in database", HttpStatus.NOT_FOUND)
-        val cardEntity = optional.get()
+
         return ResponseEntity(mapper.writeValueAsString(cardEntity.asResponse), HttpStatus.OK)
     }
 
     @PostMapping("/{listId}")
     fun createCard(@PathVariable listId: Int, @RequestBody requestBody: CardCreationRequest): ResponseEntity<String> {
         // check if listId exists
-        if (!listRepository.existsById(listId)) return ResponseEntity(
-            "There is no list with id $listId",
-            HttpStatus.NOT_FOUND
-        )
+        listRepository.safeFindById(listId)
+
         // check if creator have permission to create a card
         if (!SecurityContextHolder.getContext().authentication.isAuthenticated) return ResponseEntity(HttpStatus.UNAUTHORIZED)
         val optional = allowedTo.writeByListId(listId)
@@ -60,20 +55,14 @@ class Cards(
         if (!optional.get())
             return ResponseEntity("You have no permissions to create a card in this list", HttpStatus.FORBIDDEN)
         // creating a card
-        val cardEntity = CardEntity(
-            name = requestBody.name,
-            color = requestBody.color,
-            deadline = requestBody.deadline,
-            creatorId = authInfoRepository.findByEmail(
-                SecurityContextHolder.getContext().authentication.principal.toString()
-            )!!.userId
-        )
+        val cardEntity =
+            requestBody.asEntity(authInfoRepository.findByEmail(SecurityContextHolder.getContext().authentication.principal.toString())!!.userId)
 
         val entity = cardRepository.save(cardEntity)
         // add list to card mapping (adding card to the end of the list)
 
         val mapping = ListToCardMappingEntity(
-            cardId = entity.id!!,
+            cardId = entity.id,
             listId = listId,
             indexOfCardInList = listToCardMappingRepository.countListToCardMappingEntitiesByListId(listId)
         )
@@ -86,16 +75,14 @@ class Cards(
 
     @PatchMapping("/edit/{cardId}")
     fun editCard(@PathVariable cardId: Int, @RequestBody requestBody: CardPatchRequest): ResponseEntity<String> {
-        // check if card exists
-        val optionalCard = cardRepository.findById(cardId)
-        if (optionalCard.isEmpty) return ResponseEntity("Card with id $cardId does not exist", HttpStatus.NOT_FOUND)
+        // check if card exists and get
+        val cardEntity = cardRepository.safeFindById(cardId)
         // check if user have permission to change this card
         val optionalBool = allowedTo.writeByCardId(cardId)
         if (optionalBool.isEmpty) return ResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
         if (!optionalBool.get())
             return ResponseEntity("You have no permissions to edit this card", HttpStatus.FORBIDDEN)
         // change the card
-        val cardEntity = optionalCard.get()
         if (requestBody.name != null) cardEntity.name = requestBody.name
         if (requestBody.cardContent != null) cardEntity.cardContent = requestBody.cardContent
         if (requestBody.changeColor) cardEntity.color = requestBody.color
@@ -107,8 +94,8 @@ class Cards(
     @DeleteMapping("/{listId}/{cardId}")
     fun deleteCardFromList(@PathVariable listId: Int, @PathVariable cardId: Int): ResponseEntity<String> {
         // check if card exists
-        if (cardRepository.findById(cardId).isEmpty)
-            return ResponseEntity("Card with id $cardId does not exist", HttpStatus.NOT_FOUND)
+        cardRepository.safeFindById(cardId)
+
         // check if card is not in this list
         if (!listToCardMappingRepository.existsByListIdAndCardId(listId, cardId))
             return ResponseEntity("Card with id $cardId is not in the list with id $listId", HttpStatus.NOT_FOUND)
@@ -129,10 +116,8 @@ class Cards(
     @DeleteMapping("/{cardId}")
     fun deleteCard(@PathVariable cardId: Int): ResponseEntity<String> {
         // check if card exists
-        if (cardRepository.findById(cardId).isEmpty) return ResponseEntity(
-            "Card with id $cardId does not exist",
-            HttpStatus.NOT_FOUND
-        )
+        cardRepository.safeFindById(cardId)
+
         // check if user have permission to delete this card in all lists
         val optional = allowedTo.writeByCardId(cardId)
         if (optional.isEmpty) return ResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)

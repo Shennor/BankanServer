@@ -27,17 +27,10 @@ class Workspace(
     @GetMapping("/{workspaceId}")
     fun getWorkspace(@PathVariable workspaceId: Int): ResponseEntity<String> {
         // check if workspaceId exists
-        val workspaceOptional = workspaceRepository.findById(workspaceId)
-        if (workspaceOptional.isEmpty) return ResponseEntity(
-            "Workspace with id $workspaceId does not exist",
-            HttpStatus.NOT_FOUND
-        )
+        val workspaceEntity = workspaceRepository.safeFindById(workspaceId)
         // check if user have permission to read workspace (it's their)
-        val optional = allowedTo.readByWorkspaceId(workspaceId)
-        if (optional.isEmpty) return ResponseEntity("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR)
-        if (!optional.get()) return ResponseEntity("You have no permission to read workspace", HttpStatus.FORBIDDEN)
+        allowedTo.readByWorkspaceId(workspaceId)
         // read
-        val workspaceEntity = workspaceOptional.get()
         val mappingList = workspaceToBoardMappingRepository.findAllByWorkspaceId(workspaceId)
         return ResponseEntity(
             mapper.writeValueAsString(

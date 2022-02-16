@@ -6,10 +6,18 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.ResponseStatus
+import ru.kfd.bankan.bankanserver.entity.AuthInfoEntity
 import ru.kfd.bankan.bankanserver.repository.*
-import java.util.*
 import kotlin.reflect.KMutableProperty
 import kotlin.reflect.full.memberProperties
+
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class IdNotFoundException(message: String) : RuntimeException(message)
+@ResponseStatus(HttpStatus.NOT_FOUND)
+class UserNotFoundException(message: String) : RuntimeException(message)
+@ResponseStatus(HttpStatus.FORBIDDEN)
+class ResourceNotAllowedToUser(message: String) : RuntimeException(message)
 
 @Component
 class AllowedTo(
@@ -20,78 +28,64 @@ class AllowedTo(
     val boardRepository: BoardRepository,
     val userToWorkspaceMappingRepository: UserToWorkspaceMappingRepository
 ) {
+    private val safeCurrentUser: AuthInfoEntity
+        get() {
+            val login = SecurityContextHolder.getContext().authentication.principal.toString()
+            return authInfoRepository.findByEmail(login)
+                ?: throw UserNotFoundException("User with email: $login not found")
+        }
 
-    fun writeByBoardId(boardId: Int): Optional<Boolean> {
-        val login = SecurityContextHolder.getContext().authentication.principal
-        val creatorEntity = authInfoRepository.findByEmail(login.toString())
-            ?: return Optional.empty()
-        val creatorId = creatorEntity.userId
-        val users = boardToAssignedUserMappingRepository.getAllByBoardId(boardId)
-        if (users.find { it.userId == creatorId } == null) return Optional.of(false)
-        return Optional.of(true)
+    fun writeByBoardId(boardId: Int) {
+        val creator = safeCurrentUser
+        if (!boardToAssignedUserMappingRepository.getAllByBoardId(boardId).any { it.userId == creator.userId })
+            throw ResourceNotAllowedToUser("Board not allowed to user with email ${creator.email}")
     }
 
-    fun writeByListId(listId: Int): Optional<Boolean> {
+    fun writeByListId(listId: Int) {
         val boardToListMappingEntity = boardToListMappingRepository.findByListId(listId)
-            ?: return Optional.empty()
+            ?: throw IdNotFoundException("List with $listId not owned by any board")
         val boardId = boardToListMappingEntity.boardId
-        return writeByBoardId(boardId)
+        writeByBoardId(boardId)
     }
 
     // allowed to change this card in all lists
-    fun writeByCardId(cardId: Int): Optional<Boolean> {
+    fun writeByCardId(cardId: Int) {
         val listOfListToCardMappingEntities = listToCardMappingRepository.findAllByCardId(cardId)
-        if (listOfListToCardMappingEntities.size == 0) return Optional.empty()
+        if (listOfListToCardMappingEntities.size == 0)
+            throw IdNotFoundException("Card with $cardId not owned by any list")
+
         for (i in listOfListToCardMappingEntities) {
             val listId = i.listId
-            val optional = writeByListId(listId)
-            if (optional.isEmpty) return Optional.empty()
-            if (!optional.get()) Optional.of(false)
+            writeByListId(listId)
         }
-        return Optional.of(true)
     }
 
-    fun readByWorkspaceId(workspaceId: Int): Optional<Boolean> {
-        val login = SecurityContextHolder.getContext().authentication.principal
-        val creatorEntity = authInfoRepository.findByEmail(login.toString())
-            ?: return Optional.empty()
-        val userId = creatorEntity.userId
+    fun readByWorkspaceId(workspaceId: Int) {
+        val user = safeCurrentUser
         val mapping = userToWorkspaceMappingRepository.findByWorkspaceId(workspaceId)
-        if (mapping.isEmpty) return Optional.empty()
-        return Optional.of(mapping.get().userId == userId)
+            ?: throw IdNotFoundException("Workspace with id $workspaceId not owned by any User")
+        if (mapping.userId != user.userId)
+            throw ResourceNotAllowedToUser("Workspace with id $workspaceId not allowed to user with email ${user.email}")
     }
 
-    fun readByBoardId(boardId: Int): Optional<Boolean> {
-        val boardEntity = boardRepository.findById(boardId)
-        if (boardEntity.isEmpty) return Optional.empty()
-        if (boardEntity.get().isOpen) return Optional.of(true)
-        return writeByBoardId(boardId)
+    fun readByBoardId(boardId: Int) {
+        boardRepository.safeFindById(boardId)
+        writeByBoardId(boardId)
     }
 
-    fun readByListId(listId: Int): Optional<Boolean> {
+    fun readByListId(listId: Int) {
         val mappingEntity = boardToListMappingRepository.findByListId(listId)
-            ?: return Optional.empty()
-        return readByBoardId(mappingEntity.boardId)
+            ?: throw IdNotFoundException("List with id $listId not owned by any board")
+        readByBoardId(mappingEntity.boardId)
     }
 
     // allowed if user have permission at least to one board on which the card is
-    fun readByCardId(cardId: Int): Optional<Boolean> {
+    fun readByCardId(cardId: Int) {
         val listOfMappingEntities = listToCardMappingRepository.findAllByCardId(cardId)
-        if (listOfMappingEntities.size == 0) return Optional.empty()
-        var allowed = false
-        var exist = false
+        if (listOfMappingEntities.size == 0) throw IdNotFoundException("Card with id $cardId is not owned by any list")
         for (i in listOfMappingEntities) {
-            val optional = readByListId(i.listId)
-            if (optional.isPresent) {
-                exist = true
-                if (optional.get()) {
-                    allowed = true
-                    break
-                }
-            }
+            readByListId(i.listId)
         }
-        if (!exist) return Optional.empty()
-        return Optional.of(allowed)
     }
 
     // for users
@@ -99,12 +93,11 @@ class AllowedTo(
         return SecurityContextHolder.getContext().authentication.isAuthenticated
     }
 
-    fun editUserInfo(userId: Int): Optional<Boolean> {
-        val login = SecurityContextHolder.getContext().authentication.principal
-        val creatorEntity = authInfoRepository.findByEmail(login.toString())
-            ?: return Optional.empty()
+    fun editUserInfo(userId: Int) {
+        val creatorEntity = safeCurrentUser
         val currentUserId = creatorEntity.userId
-        return Optional.of(currentUserId == userId)
+        if (currentUserId != userId)
+            throw ResourceNotAllowedToUser("User is not owner")
     }
 }
 
@@ -116,8 +109,6 @@ inline fun <reified Entity, Num> CrudRepository<Entity, Num>.safeFindById(
     return block(entity)
 }
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class IdNotFoundException(message: String) : RuntimeException(message)
 
 inline infix fun <reified T : Any, reified R : Any> T.updateWithIfNotNull(other: R) {
     other::class.memberProperties.forEach { rightProp ->

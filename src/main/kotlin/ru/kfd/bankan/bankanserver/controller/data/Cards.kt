@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver.controller.data
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
@@ -22,12 +21,11 @@ import ru.kfd.bankan.bankanserver.repository.ListToCardMappingRepository
 @RestController
 @RequestMapping("/api/card")
 class Cards(
-    val cardRepository: CardRepository,
-    val listRepository: ListRepository,
-    val authInfoRepository: AuthInfoRepository,
-    val listToCardMappingRepository: ListToCardMappingRepository,
-    val allowedTo: AllowedTo,
-    val mapper: ObjectMapper
+    private val cardRepository: CardRepository,
+    private val listRepository: ListRepository,
+    private val authInfoRepository: AuthInfoRepository,
+    private val listToCardMappingRepository: ListToCardMappingRepository,
+    private val allowedTo: AllowedTo,
 ) {
 
     // available for who?

@@ -18,9 +18,9 @@ import ru.kfd.bankan.bankanserver.service.UserDetailsServiceImpl
 
 @EnableWebSecurity
 class SecurityConfig(
-    val userDetailsService: UserDetailsServiceImpl,
-    val unauthorizedHandler: AuthEntryPointJwt,
-    val authTokenFilter: AuthTokenFilter,
+    private val userDetailsService: UserDetailsServiceImpl,
+    private val unauthorizedHandler: AuthEntryPointJwt,
+    private val authTokenFilter: AuthTokenFilter,
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {

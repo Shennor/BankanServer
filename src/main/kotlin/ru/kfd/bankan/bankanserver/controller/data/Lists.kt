@@ -1,6 +1,7 @@
 package ru.kfd.bankan.bankanserver.controller.data
 
 import org.springframework.web.bind.annotation.*
+import ru.kfd.bankan.bankanserver.controller.AllowedTo
 import ru.kfd.bankan.bankanserver.controller.safeFindById
 import ru.kfd.bankan.bankanserver.controller.updateWithIfNotNull
 import ru.kfd.bankan.bankanserver.entity.BoardToListMappingEntity
@@ -19,13 +20,15 @@ import ru.kfd.bankan.bankanserver.repository.ListToCardMappingRepository
 @RestController
 @RequestMapping("/api/list/")
 class Lists(
-    val listRepository: ListRepository,
-    val listToCardMappingRepository: ListToCardMappingRepository,
-    val boardToListMappingRepository: BoardToListMappingRepository,
-    val cardRepository: CardRepository
+    private val listRepository: ListRepository,
+    private val listToCardMappingRepository: ListToCardMappingRepository,
+    private val boardToListMappingRepository: BoardToListMappingRepository,
+    private val cardRepository: CardRepository,
+    private val allowedTo: AllowedTo
 ) {
     @PostMapping("/{boardId}")
     fun create(@PathVariable boardId: Int, @RequestBody listRequest: ListRequest) {
+        allowedTo.writeByBoardId(boardId)
         val list = listRepository.save(listRequest.asEntity)
         val mapping = BoardToListMappingEntity(
             boardId = boardId,
@@ -35,23 +38,26 @@ class Lists(
         boardToListMappingRepository.save(mapping)
     }
 
-    @GetMapping("/info/{id}")
-    fun readInfo(@PathVariable id: Int): ListInfoResponse {
-        return listRepository.safeFindById(id).asListInfoResponse
+    @GetMapping("/info/{listId}")
+    fun readInfo(@PathVariable listId: Int): ListInfoResponse {
+        allowedTo.readByListId(listId)
+        return listRepository.safeFindById(listId).asListInfoResponse
     }
 
     @GetMapping("/{id}")
     fun readListContent(@PathVariable id: Int): ListContentResponse {
+        allowedTo.readByListId(id)
         return ListContentResponse(listToCardMappingRepository.getAllByListId(id).map {
             cardRepository.safeFindById(it.cardId).asResponse
         })
     }
 
     @PatchMapping("/edit/{id}")
-    fun updateListProperty(
+    fun updateList(
         @PathVariable id: Int,
         @RequestBody patch: ListPatchRequest
     ) {
+        allowedTo.writeByListId(id)
         val old = listRepository.safeFindById(id)
         old updateWithIfNotNull patch
 //        if (patch.name != null) old.name = patch.name
@@ -61,6 +67,7 @@ class Lists(
 
     @DeleteMapping("/{id}")
     fun delete(@PathVariable id: Int) {
+        allowedTo.writeByListId(id)
         listRepository.deleteById(id)
     }
 }

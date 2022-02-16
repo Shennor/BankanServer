@@ -1,6 +1,7 @@
 package ru.kfd.bankan.bankanserver.controller.data
 
 import org.springframework.web.bind.annotation.*
+import ru.kfd.bankan.bankanserver.controller.AllowedTo
 import ru.kfd.bankan.bankanserver.controller.safeFindById
 import ru.kfd.bankan.bankanserver.controller.updateWithIfNotNull
 import ru.kfd.bankan.bankanserver.entity.WorkspaceToBoardMappingEntity
@@ -21,14 +22,15 @@ import ru.kfd.bankan.bankanserver.repository.WorkspaceToBoardMappingRepository
 @RequestMapping("/api/board/")
 @RestController
 class Boards(
-    val workspaceToBoardMappingRepository: WorkspaceToBoardMappingRepository,
-    val boardRepository: BoardRepository,
-    val boardToListMappingRepository: BoardToListMappingRepository,
-    val listRepository: ListRepository
+    private val workspaceToBoardMappingRepository: WorkspaceToBoardMappingRepository,
+    private val boardRepository: BoardRepository,
+    private val boardToListMappingRepository: BoardToListMappingRepository,
+    private val listRepository: ListRepository,
+    private val allowedTo: AllowedTo
 ) {
     @PostMapping("/{workspaceId}")
     fun create(@PathVariable workspaceId: Int, @RequestBody body: BoardCreateRequest) {
-        // TODO("check workspace accessibility")
+        allowedTo.writeByWorkspaceId(workspaceId)
         val boardEntity = boardRepository.save(body.asEntity)
         workspaceToBoardMappingRepository.save(
             WorkspaceToBoardMappingEntity(
@@ -43,14 +45,14 @@ class Boards(
 
     @GetMapping("/info/{boardId}")
     fun readInfo(@PathVariable boardId: Int): BoardInfoResponse {
-        // TODO("check board accessibility")
+        allowedTo.readByBoardId(boardId)
         boardRepository
         return boardRepository.safeFindById(boardId).asResponse
     }
 
     @GetMapping("/{boardId}")
     fun read(@PathVariable boardId: Int): List<Pair<Int, ListInfoResponse>> {
-        // TODO("check board accessibility")
+        allowedTo.readByBoardId(boardId)
         return boardToListMappingRepository.findBoardToListMappingEntitiesByBoardId(boardId).map {
             it.listId to listRepository.safeFindById(it.listId).asListInfoResponse
         }
@@ -58,9 +60,8 @@ class Boards(
 
     @GetMapping("/edit/{boardId}")
     fun update(@PathVariable boardId: Int, @RequestBody body: BoardUpdateRequest) {
-        // TODO("check board accessibility")
+        allowedTo.writeByBoardId(boardId)
         val entity = boardRepository.safeFindById(boardId)
-
 
         entity updateWithIfNotNull body
 ////        entity.name = body.name ?: entity.name
@@ -69,10 +70,9 @@ class Boards(
         boardRepository.save(entity)
     }
 
-
     @GetMapping("/delete/{boardId}")
     fun delete(@PathVariable boardId: Int) {
-        // TODO("check board accessibility")
+        allowedTo.writeByBoardId(boardId)
         boardRepository.deleteById(boardId)
         workspaceToBoardMappingRepository.deleteWorkspaceToBoardMappingEntityByBoardId(boardId)
         // TODO("delete nested structures")

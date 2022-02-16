@@ -15,8 +15,8 @@ import ru.kfd.bankan.bankanserver.repository.UserInfoRepository
 @Primary
 @Service
 class UserDetailsServiceImpl(
-    val authInfoRepository: AuthInfoRepository,
-    val userInfoRepository: UserInfoRepository
+    private val authInfoRepository: AuthInfoRepository,
+    private val userInfoRepository: UserInfoRepository
 ) : UserDetailsService {
 
     @Transactional

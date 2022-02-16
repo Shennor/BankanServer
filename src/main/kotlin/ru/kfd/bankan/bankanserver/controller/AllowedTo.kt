@@ -14,19 +14,21 @@ import kotlin.reflect.full.memberProperties
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class IdNotFoundException(message: String) : RuntimeException(message)
+
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class UserNotFoundException(message: String) : RuntimeException(message)
+
 @ResponseStatus(HttpStatus.FORBIDDEN)
 class ResourceNotAllowedToUser(message: String) : RuntimeException(message)
 
 @Component
 class AllowedTo(
-    val authInfoRepository: AuthInfoRepository,
-    val boardToAssignedUserMappingRepository: BoardToAssignedUserMappingRepository,
-    val boardToListMappingRepository: BoardToListMappingRepository,
-    val listToCardMappingRepository: ListToCardMappingRepository,
-    val boardRepository: BoardRepository,
-    val userToWorkspaceMappingRepository: UserToWorkspaceMappingRepository
+    private val authInfoRepository: AuthInfoRepository,
+    private val boardToAssignedUserMappingRepository: BoardToAssignedUserMappingRepository,
+    private val boardToListMappingRepository: BoardToListMappingRepository,
+    private val listToCardMappingRepository: ListToCardMappingRepository,
+    private val boardRepository: BoardRepository,
+    private val userToWorkspaceMappingRepository: UserToWorkspaceMappingRepository
 ) {
     private val safeCurrentUser: AuthInfoEntity
         get() {
@@ -35,9 +37,19 @@ class AllowedTo(
                 ?: throw UserNotFoundException("User with email: $login not found")
         }
 
+    fun writeByWorkspaceId(workspaceId: Int) {
+        val creator = safeCurrentUser
+        if (!userToWorkspaceMappingRepository.findUserToWorkspaceMappingEntitiesByWorkspaceId(workspaceId)
+                .any { it.userId == creator.userId }
+        )
+            throw ResourceNotAllowedToUser("Workspace not allowed to user with email ${creator.email}")
+    }
+
     fun writeByBoardId(boardId: Int) {
         val creator = safeCurrentUser
-        if (!boardToAssignedUserMappingRepository.getAllByBoardId(boardId).any { it.userId == creator.userId })
+        if (!boardToAssignedUserMappingRepository.findBoardToAssignedUserEntitiesByBoardId(boardId)
+                .any { it.userId == creator.userId }
+        )
             throw ResourceNotAllowedToUser("Board not allowed to user with email ${creator.email}")
     }
 

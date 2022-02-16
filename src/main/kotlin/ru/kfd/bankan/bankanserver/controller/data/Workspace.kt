@@ -1,8 +1,5 @@
 package ru.kfd.bankan.bankanserver.controller.data
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -18,28 +15,23 @@ import ru.kfd.bankan.bankanserver.repository.WorkspaceToBoardMappingRepository
 @RequestMapping("/api/workspace")
 @RestController
 class Workspace(
-    val workspaceRepository: WorkspaceRepository,
-    val workspaceToBoardMappingRepository: WorkspaceToBoardMappingRepository,
-    val boardRepository: BoardRepository,
-    val allowedTo: AllowedTo,
-    val mapper: ObjectMapper
+    private val workspaceRepository: WorkspaceRepository,
+    private val workspaceToBoardMappingRepository: WorkspaceToBoardMappingRepository,
+    private val boardRepository: BoardRepository,
+    private val allowedTo: AllowedTo,
 ) {
     @GetMapping("/{workspaceId}")
-    fun getWorkspace(@PathVariable workspaceId: Int): ResponseEntity<String> {
+    fun getWorkspace(@PathVariable workspaceId: Int): WorkspaceResponse {
         // check if workspaceId exists
         val workspaceEntity = workspaceRepository.safeFindById(workspaceId)
         // check if user have permission to read workspace (it's their)
         allowedTo.readByWorkspaceId(workspaceId)
         // read
         val mappingList = workspaceToBoardMappingRepository.findAllByWorkspaceId(workspaceId)
-        return ResponseEntity(
-            mapper.writeValueAsString(
-                WorkspaceResponse(
-                    workspaceEntity.id,
-                    workspaceEntity.name!!,
-                    (mappingList.map { boardRepository.safeFindById(it.boardId) }).toList()
-                )
-            ), HttpStatus.OK
+        return WorkspaceResponse(
+            workspaceEntity.id,
+            workspaceEntity.name!!,
+            (mappingList.map { boardRepository.safeFindById(it.boardId) }).toList()
         )
     }
 }

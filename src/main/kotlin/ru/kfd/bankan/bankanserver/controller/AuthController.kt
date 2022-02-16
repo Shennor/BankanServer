@@ -25,11 +25,11 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(
-    val authenticationManager: AuthenticationManager,
-    val userInfoRepository: UserInfoRepository,
-    val authInfoRepository: AuthInfoRepository,
-    val encoder: PasswordEncoder,
-    val jwtUtils: JwtUtils
+    private val authenticationManager: AuthenticationManager,
+    private val userInfoRepository: UserInfoRepository,
+    private val authInfoRepository: AuthInfoRepository,
+    private val encoder: PasswordEncoder,
+    private val jwtUtils: JwtUtils
 ) {
 
     @PostMapping("/signin")

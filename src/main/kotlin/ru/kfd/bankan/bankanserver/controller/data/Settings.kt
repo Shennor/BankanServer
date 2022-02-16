@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver.controller.data
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.controller.AllowedTo
 import ru.kfd.bankan.bankanserver.controller.safeFindById
@@ -13,10 +12,9 @@ import ru.kfd.bankan.bankanserver.repository.UserSettingsRepository
 @RequestMapping("/api/settings")
 @RestController
 class Settings(
-    val userSettingsRepository: UserSettingsRepository,
-    val userInfoRepository: UserInfoRepository,
-    val allowedTo: AllowedTo,
-    val mapper: ObjectMapper
+    private val userSettingsRepository: UserSettingsRepository,
+    private val userInfoRepository: UserInfoRepository,
+    private val allowedTo: AllowedTo,
 ) {
 
     @GetMapping("/{userId}")

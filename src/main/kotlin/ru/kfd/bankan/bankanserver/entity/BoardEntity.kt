@@ -1,11 +1,12 @@
 package ru.kfd.bankan.bankanserver.entity
 
-import java.sql.Date
+import java.time.LocalDate
+import java.util.*
 import javax.persistence.*
 
 @Entity
 @Table(name = "board")
-class BoardEntity (
+class BoardEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")

@@ -6,11 +6,11 @@ import java.util.*
 data class BoardInfoResponse(
     val name: String,
     val description: String,
-    val creationDate: Date,
+    val creationDate: String,
     val isOpen: Boolean
 )
 
 val BoardEntity.asResponse
     get() = BoardInfoResponse(
-        name!!, description!!, creationData!!, isOpen
+        name!!, description!!, creationData!!.toString(), isOpen
     )

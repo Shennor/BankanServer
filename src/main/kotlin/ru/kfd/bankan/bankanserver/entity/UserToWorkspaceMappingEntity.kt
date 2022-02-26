@@ -4,20 +4,21 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "user_to_workspace_mapping")
-class UserToWorkspaceMappingEntity (
+class UserToWorkspaceMappingEntity{
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
-    var id: Int = 0,
+    var id: Int = 0
 
     @Basic
     @Column(name = "user_id", nullable = false)
-    var userId: Int,
+    var userId: Int? = null
 
     @Basic
     @Column(name = "workspace_id", nullable = false)
-    var workspaceId: Int,
-) {
+    var workspaceId: Int? = null
+
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
         if (o == null || javaClass != o.javaClass) return false
@@ -29,8 +30,8 @@ class UserToWorkspaceMappingEntity (
 
     override fun hashCode(): Int {
         var result = id
-        result = 31 * result + userId
-        result = 31 * result + workspaceId
+        result = 31 * result + userId!!
+        result = 31 * result + workspaceId!!
         return result
     }
 }

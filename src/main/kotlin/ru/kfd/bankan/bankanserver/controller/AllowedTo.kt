@@ -4,6 +4,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.ResponseStatus
 import ru.kfd.bankan.bankanserver.entity.AuthInfoEntity
@@ -30,15 +31,21 @@ class AllowedTo(
     private val boardRepository: BoardRepository,
     private val userToWorkspaceMappingRepository: UserToWorkspaceMappingRepository
 ) {
-    private val safeCurrentUser: AuthInfoEntity
-        get() {
-            val login = SecurityContextHolder.getContext().authentication.principal.toString()
-            return authInfoRepository.findByEmail(login)
-                ?: throw UserNotFoundException("User with email: $login not found")
+    fun safeCurrentUser(): AuthInfoEntity
+    {
+        val principal = SecurityContextHolder.getContext().authentication.principal
+
+        val username : String = if (principal is UserDetails) {
+            principal.username
+        } else {
+            principal.toString()
         }
+        return authInfoRepository.findByEmail(username)
+            ?: throw UserNotFoundException("User with email: $username not found")
+    }
 
     fun writeByWorkspaceId(workspaceId: Int) {
-        val creator = safeCurrentUser
+        val creator = safeCurrentUser()
         if (!userToWorkspaceMappingRepository.findUserToWorkspaceMappingEntitiesByWorkspaceId(workspaceId)
                 .any { it.userId == creator.userId }
         )
@@ -46,7 +53,7 @@ class AllowedTo(
     }
 
     fun writeByBoardId(boardId: Int) {
-        val creator = safeCurrentUser
+        val creator = safeCurrentUser()
         if (!boardToAssignedUserMappingRepository.findBoardToAssignedUserEntitiesByBoardId(boardId)
                 .any { it.userId == creator.userId }
         )
@@ -73,7 +80,7 @@ class AllowedTo(
     }
 
     fun readByWorkspaceId(workspaceId: Int) {
-        val user = safeCurrentUser
+        val user = safeCurrentUser()
         val mapping = userToWorkspaceMappingRepository.findByWorkspaceId(workspaceId)
             ?: throw IdNotFoundException("Workspace with id $workspaceId not owned by any User")
         if (mapping.userId != user.userId)
@@ -106,7 +113,7 @@ class AllowedTo(
     }
 
     fun editUserInfo(userId: Int) {
-        val creatorEntity = safeCurrentUser
+        val creatorEntity = safeCurrentUser()
         val currentUserId = creatorEntity.userId
         if (currentUserId != userId)
             throw ResourceNotAllowedToUser("User is not owner")
@@ -120,7 +127,6 @@ inline fun <reified Entity, Num> CrudRepository<Entity, Num>.safeFindById(
     val entity = findByIdOrNull(id) ?: throw IdNotFoundException("id = $id not found in ${Entity::class.simpleName}")
     return block(entity)
 }
-
 
 inline infix fun <reified T : Any, reified R : Any> T.updateWithIfNotNull(other: R) {
     other::class.memberProperties.forEach { rightProp ->

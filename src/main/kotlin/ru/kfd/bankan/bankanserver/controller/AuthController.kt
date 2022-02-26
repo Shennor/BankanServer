@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.JwtUtils
 import ru.kfd.bankan.bankanserver.entity.AuthInfoEntity
 import ru.kfd.bankan.bankanserver.entity.UserInfoEntity
+import ru.kfd.bankan.bankanserver.entity.UserToWorkspaceMappingEntity
+import ru.kfd.bankan.bankanserver.entity.WorkspaceEntity
 import ru.kfd.bankan.bankanserver.payload.request.LoginRequest
 import ru.kfd.bankan.bankanserver.payload.request.SignupRequest
 import ru.kfd.bankan.bankanserver.payload.response.JwtResponse
 import ru.kfd.bankan.bankanserver.payload.response.MessageResponse
-import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
-import ru.kfd.bankan.bankanserver.repository.UserInfoRepository
+import ru.kfd.bankan.bankanserver.repository.*
 import ru.kfd.bankan.bankanserver.service.UserDetailsImpl
 import java.util.stream.Collectors
 import javax.validation.Valid
@@ -28,6 +29,8 @@ class AuthController(
     private val authenticationManager: AuthenticationManager,
     private val userInfoRepository: UserInfoRepository,
     private val authInfoRepository: AuthInfoRepository,
+    private val userToWorkspaceMappingRepository: UserToWorkspaceMappingRepository,
+    private val workspaceRepository: WorkspaceRepository,
     private val encoder: PasswordEncoder,
     private val jwtUtils: JwtUtils
 ) {
@@ -64,13 +67,20 @@ class AuthController(
         val user = UserInfoEntity(
             name = signUpRequest.username
         )
-        val newUserId = userInfoRepository.save(user).id
+        val newUser = userInfoRepository.save(user)
         val auth = AuthInfoEntity(
-            userId = newUserId,
+            userId = newUser.id,
             email = signUpRequest.login,
             passwordHash = encoder.encode(signUpRequest.password)
         )
+        val workspace = WorkspaceEntity()
+        workspace.name = newUser.name
         authInfoRepository.save(auth)
+        val newWorkspace = workspaceRepository.save(workspace)
+        val mapping = UserToWorkspaceMappingEntity()
+        mapping.userId = newUser.id
+        mapping.workspaceId = newWorkspace.id
+        userToWorkspaceMappingRepository.save(mapping)
         return ResponseEntity.ok<Any>(MessageResponse("User registered successfully!"))
     }
 }

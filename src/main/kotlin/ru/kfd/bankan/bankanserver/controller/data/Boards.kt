@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.controller.AllowedTo
 import ru.kfd.bankan.bankanserver.controller.safeFindById
 import ru.kfd.bankan.bankanserver.controller.updateWithIfNotNull
+import ru.kfd.bankan.bankanserver.entity.BoardEntity
+import ru.kfd.bankan.bankanserver.entity.BoardToAssignedUserEntity
 import ru.kfd.bankan.bankanserver.entity.WorkspaceToBoardMappingEntity
 import ru.kfd.bankan.bankanserver.payload.request.BoardCreateRequest
 import ru.kfd.bankan.bankanserver.payload.request.BoardUpdateRequest
@@ -12,10 +14,12 @@ import ru.kfd.bankan.bankanserver.payload.response.BoardInfoResponse
 import ru.kfd.bankan.bankanserver.payload.response.ListInfoResponse
 import ru.kfd.bankan.bankanserver.payload.response.asListInfoResponse
 import ru.kfd.bankan.bankanserver.payload.response.asResponse
-import ru.kfd.bankan.bankanserver.repository.BoardRepository
-import ru.kfd.bankan.bankanserver.repository.BoardToListMappingRepository
-import ru.kfd.bankan.bankanserver.repository.ListRepository
-import ru.kfd.bankan.bankanserver.repository.WorkspaceToBoardMappingRepository
+import ru.kfd.bankan.bankanserver.repository.*
+import java.sql.Date
+import java.sql.Time
+import java.time.Instant.now
+import java.time.LocalDate
+import java.util.*
 
 
 // TODO
@@ -25,13 +29,22 @@ class Boards(
     private val workspaceToBoardMappingRepository: WorkspaceToBoardMappingRepository,
     private val boardRepository: BoardRepository,
     private val boardToListMappingRepository: BoardToListMappingRepository,
+    private val boardToAssignedUserMappingRepository: BoardToAssignedUserMappingRepository,
     private val listRepository: ListRepository,
     private val allowedTo: AllowedTo
 ) {
     @PostMapping("/{workspaceId}")
     fun create(@PathVariable workspaceId: Int, @RequestBody body: BoardCreateRequest) {
         allowedTo.writeByWorkspaceId(workspaceId)
-        val boardEntity = boardRepository.save(body.asEntity)
+        val boardEntity = BoardEntity(name = body.name, description = body.description, creationData = Date.valueOf(
+            LocalDate.now()))
+        val newBoardEntity = boardRepository.save(boardEntity)
+        boardToAssignedUserMappingRepository.save(
+            BoardToAssignedUserEntity(
+                boardId = newBoardEntity.id,
+                userId = allowedTo.safeCurrentUser().userId
+            )
+        )
         workspaceToBoardMappingRepository.save(
             WorkspaceToBoardMappingEntity(
                 workspaceId = workspaceId,
@@ -46,7 +59,6 @@ class Boards(
     @GetMapping("/info/{boardId}")
     fun readInfo(@PathVariable boardId: Int): BoardInfoResponse {
         allowedTo.readByBoardId(boardId)
-        boardRepository
         return boardRepository.safeFindById(boardId).asResponse
     }
 
@@ -58,23 +70,26 @@ class Boards(
         }
     }
 
-    @GetMapping("/edit/{boardId}")
+    // TODO: Test this
+    @PatchMapping("/edit/{boardId}")
     fun update(@PathVariable boardId: Int, @RequestBody body: BoardUpdateRequest) {
         allowedTo.writeByBoardId(boardId)
         val entity = boardRepository.safeFindById(boardId)
-
         entity updateWithIfNotNull body
-////        entity.name = body.name ?: entity.name
+//        entity.name = body.name ?: entity.name
 //        if (body.name != null) entity.name = body.name
 //        if (body.description != null) entity.description = body.description
         boardRepository.save(entity)
     }
 
-    @GetMapping("/delete/{boardId}")
+    // TODO: Test this
+    @DeleteMapping("/delete/{boardId}")
     fun delete(@PathVariable boardId: Int) {
         allowedTo.writeByBoardId(boardId)
-        boardRepository.deleteById(boardId)
         workspaceToBoardMappingRepository.deleteWorkspaceToBoardMappingEntityByBoardId(boardId)
+        boardToAssignedUserMappingRepository.deleteAllByBoardIdAndUserId(boardId, allowedTo.safeCurrentUser().userId)
+        if(!boardToAssignedUserMappingRepository.existsByBoardId(boardId))
+            boardRepository.deleteById(boardId)
         // TODO("delete nested structures")
     }
 }

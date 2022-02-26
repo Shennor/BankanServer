@@ -24,4 +24,9 @@ class DataApiExceptionHandler {
     fun resourceNotAllowed(exception: ResourceNotAllowedToUser): ResponseEntity<String> {
         return ResponseEntity<String>(exception.message, HttpStatus.FORBIDDEN)
     }
+
+    @ExceptionHandler(value = [Exception::class])
+    fun wtf(exception: Exception): ResponseEntity<String> {
+        return ResponseEntity<String>(exception.stackTraceToString(), HttpStatus.INTERNAL_SERVER_ERROR)
+    }
 }

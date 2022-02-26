@@ -36,12 +36,10 @@ class Boards(
     @PostMapping("/{workspaceId}")
     fun create(@PathVariable workspaceId: Int, @RequestBody body: BoardCreateRequest) {
         allowedTo.writeByWorkspaceId(workspaceId)
-        val boardEntity = BoardEntity(name = body.name, description = body.description, creationData = Date.valueOf(
-            LocalDate.now()))
-        val newBoardEntity = boardRepository.save(boardEntity)
+        val boardEntity = boardRepository.save(body.asEntity)
         boardToAssignedUserMappingRepository.save(
             BoardToAssignedUserEntity(
-                boardId = newBoardEntity.id,
+                boardId = boardEntity.id,
                 userId = allowedTo.safeCurrentUser().userId
             )
         )

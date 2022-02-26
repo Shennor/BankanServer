@@ -1,6 +1,8 @@
 package ru.kfd.bankan.bankanserver.payload.request
 
 import ru.kfd.bankan.bankanserver.entity.BoardEntity
+import java.sql.Date
+import java.time.DateTimeException
 import java.time.LocalDate
 
 data class BoardCreateRequest(
@@ -11,5 +13,6 @@ data class BoardCreateRequest(
 val BoardCreateRequest.asEntity
     get() = BoardEntity().also {
         it.name = name
-        it.description = name
+        it.description = description
+        it.creationData = Date.valueOf(LocalDate.now())
     }

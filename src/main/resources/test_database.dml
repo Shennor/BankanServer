@@ -1,0 +1,79 @@
+use bankan;
+
+insert into user_info value (1, 'Masha', curdate());
+insert into user_info value (2, 'Dima', curdate());
+
+insert into auth_info value (1, 1, 'masha@mail.ru', '$2a$12$92.B/N.q4u.10C8wzkkD2evXKR4COhxYZMAXYxXsHWnAhwls/1W6S');
+insert into auth_info value (2, 2, 'dima@mail.ru', '$2a$12$RXmsibfPNTW1E6D1Efe8WOMp2RDYUoovj0tRWR3GcJYXqCk.IFTL.');
+
+insert into user_settings value (1, 1, '{"something" : "something"}');
+insert into user_settings value (2, 2, '{"something" : "something"}');
+
+insert into workspace value (1, 'Beautiful workspace');
+insert into workspace value (2, 'Nice workspace');
+
+insert into user_to_workspace_mapping value (1, 1, 1);
+insert into user_to_workspace_mapping value (2, 2, 2);
+
+insert into board value (1, 'My Beautiful Life', 'All my interesting everyday tasks', true, curdate());
+insert into board value (2, 'My Common Life', 'Some my everyday tasks', false, curdate());
+insert into board value (3, 'Secret Project', 'Tasks onn our secret project', false, curdate());
+
+insert into workspace_to_board_mapping value (1, 1, 1, 0);
+insert into workspace_to_board_mapping value (2, 2, 2, 0);
+insert into workspace_to_board_mapping value (3, 2, 3, 1);
+
+insert into board_to_assigned_user value (1, 1, 1);
+insert into board_to_assigned_user value (2, 1, 3);
+insert into board_to_assigned_user value (3, 2, 2);
+insert into board_to_assigned_user value (4, 2, 3);
+
+insert into list value (1, 'Blogging', 'General blogging tasks', curdate());
+insert into list value (2, 'Shopping', 'All things i wanna buy', curdate());
+insert into list value (3, 'Planned on today', 'From washing up to visit a doctor', curdate());
+insert into list value (4, 'List to buy', 'Stuff i need', curdate());
+insert into list value (5, 'Education', 'Courses and topics to learn', curdate());
+insert into list value (6, 'Development', 'It is obvious', curdate());
+insert into list value (7, 'Testing', 'A huge work now', curdate());
+insert into list value (8, 'PR', 'For some time it will be needed', curdate());
+
+insert into board_to_list_mapping value (1, 1, 1, 0);
+insert into board_to_list_mapping value (2, 1, 2, 1);
+insert into board_to_list_mapping value (3, 2, 3, 0);
+insert into board_to_list_mapping value (4, 2, 4, 1);
+insert into board_to_list_mapping value (5, 2, 5, 2);
+insert into board_to_list_mapping value (6, 3, 6, 0);
+insert into board_to_list_mapping value (7, 3, 7, 1);
+insert into board_to_list_mapping value (8, 3, 8, 2);
+
+insert into card value (1, 'Record a video', 0, curdate(), curdate() + 1, 1, '{"something" : "something"}');
+insert into card value (2, 'Upload the video', 0, curdate(), curdate() + 2, 1, '{"something" : "something"}');
+insert into card value (3, 'Buy a ticket to St Petersburg', 0, curdate(), null, 1, '{"something" : "something"}');
+insert into card value (4, 'Buy new camera', 0, curdate(), null, 1, '{"something" : "something"}');
+insert into card value (5, 'Buy vintage lamp', 0, curdate(), null, 1, '{"something" : "something"}');
+insert into card value (6, 'Wash the dishes', 0, curdate(), null, 2, '{"something" : "something"}');
+insert into card value (7, 'Feed fish', 0, curdate(), curdate(), 2, '{"something" : "something"}');
+insert into card value (8, 'Weep the floor', 0, curdate(), null, 2, '{"something" : "something"}');
+insert into card value (9, 'Play romantic songs to girlfriend', 0, curdate(), null, 2, '{"something" : "something"}');
+insert into card value (10, 'Buy a ticket to St Petersburg', 0, curdate(), null, 2, '{"something" : "something"}');
+insert into card value (11, 'Learn Java', 0, curdate(), null, 2, '{"something" : "something"}');
+insert into card value (12, 'Learn React', 0, curdate(), null, 2, '{"something" : "something"}');
+insert into card value (13, 'Make the server', 0, curdate(), null, 2, '{"something" : "something"}');
+insert into card value (14, 'Test the server', 0, curdate(), null, 2, '{"something" : "something"}');
+insert into card value (15, 'Test the server deeply', 0, curdate(), null, 2, '{"something" : "something"}');
+
+insert into list_to_card_mapping value (1, 1, 1, 0);
+insert into list_to_card_mapping value (2, 1, 2, 1);
+insert into list_to_card_mapping value (3, 2, 3, 0);
+insert into list_to_card_mapping value (4, 2, 4, 1);
+insert into list_to_card_mapping value (5, 2, 5, 2);
+insert into list_to_card_mapping value (6, 3, 6, 0);
+insert into list_to_card_mapping value (7, 3, 7, 1);
+insert into list_to_card_mapping value (8, 3, 8, 2);
+insert into list_to_card_mapping value (9, 3, 9, 3);
+insert into list_to_card_mapping value (10, 4, 10, 0);
+insert into list_to_card_mapping value (11, 5, 11, 0);
+insert into list_to_card_mapping value (12, 5, 12, 1);
+insert into list_to_card_mapping value (13, 6, 13, 0);
+insert into list_to_card_mapping value (14, 7, 14, 0);
+insert into list_to_card_mapping value (15, 7, 15, 1);

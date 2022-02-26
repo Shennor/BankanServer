@@ -14,7 +14,7 @@ create table auth_info
 (
     id            integer primary key auto_increment,
     user_id       integer     not null,
-    email         varchar(20) not null unique,
+    email         varchar(40) not null unique,
     password_hash varchar(60) not null,
 
     foreign key (user_id) references user_info (id)
@@ -23,7 +23,7 @@ create table auth_info
 create table card
 (
     id            integer primary key auto_increment,
-    name          varchar(20) not null,
+    name          varchar(4096) not null,
     color         integer     not null default (0),
     creation_data date        not null default (curdate()),
     deadline      date,
@@ -45,7 +45,7 @@ create table card_to_assigned_user
 create table list
 (
     id            integer primary key auto_increment,
-    name          varchar(20) not null,
+    name          varchar(40) not null,
     description   text        not null,
     creation_data date        not null default (curdate())
 );
@@ -63,7 +63,7 @@ create table list_to_card_mapping
 create table board
 (
     id            integer primary key auto_increment,
-    name          varchar(20) not null,
+    name          varchar(40) not null,
     description   mediumtext  not null,
     is_open       boolean     not null default false,
     creation_data date        not null default (curdate())
@@ -91,7 +91,7 @@ create table board_to_assigned_user
 create table workspace
 (
     id   integer primary key auto_increment,
-    name varchar(20) not null
+    name varchar(40) not null
 );
 
 create table user_to_workspace_mapping

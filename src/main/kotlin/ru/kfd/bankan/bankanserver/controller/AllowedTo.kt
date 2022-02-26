@@ -88,8 +88,10 @@ class AllowedTo(
     }
 
     fun readByBoardId(boardId: Int) {
-        boardRepository.safeFindById(boardId)
-        writeByBoardId(boardId)
+        val boardEntity = boardRepository.findById(boardId)
+            if(boardEntity.isEmpty)
+                throw IdNotFoundException("Board with id $boardId not found")
+        //writeByBoardId(boardId)
     }
 
     fun readByListId(listId: Int) {

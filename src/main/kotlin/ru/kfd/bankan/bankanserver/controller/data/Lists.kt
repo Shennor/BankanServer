@@ -1,5 +1,6 @@
 package ru.kfd.bankan.bankanserver.controller.data
 
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.controller.AllowedTo
 import ru.kfd.bankan.bankanserver.controller.safeFindById
@@ -38,6 +39,7 @@ class Lists(
         boardToListMappingRepository.save(mapping)
     }
 
+    // TODO: Test
     @GetMapping("/info/{listId}")
     fun readInfo(@PathVariable listId: Int): ListInfoResponse {
         allowedTo.readByListId(listId)
@@ -65,11 +67,20 @@ class Lists(
         listRepository.save(old)
     }
 
+    //TODO: Test
+    @DeleteMapping("/{boardId}/{listId}")
+    fun deleteList(@PathVariable boardId: Int, @PathVariable listId: Int) {
+        // TODO: delete only 1 mapping
+    }
+
+    //TODO: Test
     @DeleteMapping("/{id}")
-    fun delete(@PathVariable id: Int) {
+    fun deleteList(@PathVariable id: Int) {
         allowedTo.writeByListId(id)
         listRepository.deleteById(id)
+        // TODO: add deletion from all boards
     }
+
 }
 
 

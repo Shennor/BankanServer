@@ -4,6 +4,7 @@ import ru.kfd.bankan.bankanserver.entity.ListEntity
 import java.sql.Date
 import java.time.LocalDate
 
+// TODO: add exceptions on length of name and description
 data class ListRequest(
     val name: String,
     val description: String

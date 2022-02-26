@@ -16,7 +16,7 @@ class UserInfoEntity(
     var name: String,
 
     @Column(name = "registration_date", nullable = false)
-    val registrationDate: LocalDate = LocalDate.now(),
+    val registrationDate: LocalDate? = null,
 ) {
 
     override fun equals(other: Any?): Boolean {

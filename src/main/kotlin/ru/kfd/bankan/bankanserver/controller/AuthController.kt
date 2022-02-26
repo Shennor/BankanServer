@@ -8,16 +8,14 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.JwtUtils
-import ru.kfd.bankan.bankanserver.entity.AuthInfoEntity
-import ru.kfd.bankan.bankanserver.entity.UserInfoEntity
-import ru.kfd.bankan.bankanserver.entity.UserToWorkspaceMappingEntity
-import ru.kfd.bankan.bankanserver.entity.WorkspaceEntity
+import ru.kfd.bankan.bankanserver.entity.*
 import ru.kfd.bankan.bankanserver.payload.request.LoginRequest
 import ru.kfd.bankan.bankanserver.payload.request.SignupRequest
 import ru.kfd.bankan.bankanserver.payload.response.JwtResponse
 import ru.kfd.bankan.bankanserver.payload.response.MessageResponse
 import ru.kfd.bankan.bankanserver.repository.*
 import ru.kfd.bankan.bankanserver.service.UserDetailsImpl
+import java.time.LocalDate
 import java.util.stream.Collectors
 import javax.validation.Valid
 
@@ -31,6 +29,7 @@ class AuthController(
     private val authInfoRepository: AuthInfoRepository,
     private val userToWorkspaceMappingRepository: UserToWorkspaceMappingRepository,
     private val workspaceRepository: WorkspaceRepository,
+    private val settingsRepository: UserSettingsRepository,
     private val encoder: PasswordEncoder,
     private val jwtUtils: JwtUtils
 ) {
@@ -65,7 +64,8 @@ class AuthController(
                 .body<Any>(MessageResponse("Error: Login is already taken!"))
         }
         val user = UserInfoEntity(
-            name = signUpRequest.username
+            name = signUpRequest.username,
+            registrationDate = LocalDate.now()
         )
         val newUser = userInfoRepository.save(user)
         val auth = AuthInfoEntity(
@@ -81,6 +81,7 @@ class AuthController(
         mapping.userId = newUser.id
         mapping.workspaceId = newWorkspace.id
         userToWorkspaceMappingRepository.save(mapping)
+        settingsRepository.save(UserSettingsEntity(userId = newUser.id, settings = "usual"))
         return ResponseEntity.ok<Any>(MessageResponse("User registered successfully!"))
     }
 }

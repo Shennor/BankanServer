@@ -14,6 +14,7 @@ class Users(
     private val userInfoRepository: UserInfoRepository,
     private val allowedTo: AllowedTo,
 ) {
+    // TODO: Test - strange problem with date
     @GetMapping("/{userId}")
     fun getUserInfo(@PathVariable userId: Int): UserInfoResponse {
         // check existing
@@ -38,6 +39,7 @@ class Users(
         userInfoRepository.save(userEntity)
     }
 
+    // TODO: Test
     @DeleteMapping("/{userId}")
     fun delete(@PathVariable userId: Int) {
         // check existing

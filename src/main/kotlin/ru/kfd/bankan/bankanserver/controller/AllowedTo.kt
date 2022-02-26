@@ -126,7 +126,7 @@ inline fun <reified Entity, Num> CrudRepository<Entity, Num>.safeFindById(
     id: Num,
     block: ((entity: Entity) -> Entity) = { it }
 ): Entity {
-    val entity = findByIdOrNull(id) ?: throw IdNotFoundException("id = $id not found in ${Entity::class.simpleName}")
+    val entity = findByIdOrNull(id) ?: throw IdNotFoundException("id = $id not found as ${Entity::class.simpleName}")
     return block(entity)
 }
 

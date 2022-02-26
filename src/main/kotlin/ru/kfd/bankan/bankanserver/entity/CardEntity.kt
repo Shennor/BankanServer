@@ -11,7 +11,7 @@ open class CardEntity(
     @Column(name = "id", nullable = false)
     var id: Int = 0,
 
-    @Column(name = "name", nullable = false, length = 20)
+    @Column(name = "name", nullable = false, length = 4096)
     var name: String? = null,
 
     @Column(name = "color", nullable = false)
@@ -26,6 +26,6 @@ open class CardEntity(
     @Column(name = "creator_id", nullable = false)
     var creatorId: Int? = null,
 
-    @Column(name = "card_content", nullable = false)
+    @Column(name = "card_content", nullable = false, length = 4096)
     var cardContent: String? = null
 )

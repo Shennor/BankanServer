@@ -44,16 +44,13 @@ class Cards(
     fun createCard(@PathVariable listId: Int, @RequestBody requestBody: CardCreationRequest): ResponseEntity<String> {
         // check if listId exists
         listRepository.safeFindById(listId)
-
         // check if creator have permission to create a card
         allowedTo.writeByListId(listId)
-
+        val userId = allowedTo.safeCurrentUser().userId
         // creating a card
         val cardEntity =
-            requestBody.asEntity(authInfoRepository.findByEmail(SecurityContextHolder.getContext().authentication.principal.toString())!!.userId)
-
+            requestBody.asEntity(userId)
         val entity = cardRepository.save(cardEntity)
-
         // add list to card mapping (adding card to the end of the list)
         val mapping = ListToCardMappingEntity(
             cardId = entity.id,

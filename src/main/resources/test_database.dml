@@ -37,6 +37,15 @@ insert into list value (6, 'Development', 'It is obvious', curdate());
 insert into list value (7, 'Testing', 'A huge work now', curdate());
 insert into list value (8, 'PR', 'For some time it will be needed', curdate());
 
+insert into list value (10, 'Blogging', 'General blogging tasks', curdate());
+insert into list value (11, 'Shopping', 'All things i wanna buy', curdate());
+insert into list value (12, 'Planned on today', 'From washing up to visit a doctor', curdate());
+insert into list value (13, 'List to buy', 'Stuff i need', curdate());
+insert into list value (14, 'Education', 'Courses and topics to learn', curdate());
+insert into list value (15, 'Development', 'It is obvious', curdate());
+insert into list value (16, 'Testing', 'A huge work now', curdate());
+insert into list value (17, 'PR', 'For some time it will be needed', curdate());
+
 insert into board_to_list_mapping value (1, 1, 1, 0);
 insert into board_to_list_mapping value (2, 1, 2, 1);
 insert into board_to_list_mapping value (3, 2, 3, 0);

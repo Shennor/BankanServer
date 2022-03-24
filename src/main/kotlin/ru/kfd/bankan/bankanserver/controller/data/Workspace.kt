@@ -2,10 +2,7 @@ package ru.kfd.bankan.bankanserver.controller.data
 
 import org.hibernate.annotations.Parameter
 import org.springframework.data.jpa.repository.Query
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.controller.AllowedTo
 import ru.kfd.bankan.bankanserver.controller.safeFindById
 import ru.kfd.bankan.bankanserver.payload.response.WorkspaceResponse
@@ -15,6 +12,7 @@ import ru.kfd.bankan.bankanserver.repository.WorkspaceRepository
 import ru.kfd.bankan.bankanserver.repository.WorkspaceToBoardMappingRepository
 
 // TODO
+@CrossOrigin(origins = ["http://localhost:8080"])
 @RequestMapping("/api/workspace")
 @RestController
 class Workspace(

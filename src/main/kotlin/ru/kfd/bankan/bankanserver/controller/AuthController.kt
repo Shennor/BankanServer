@@ -1,5 +1,6 @@
 package ru.kfd.bankan.bankanserver.controller
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -49,11 +50,14 @@ class AuthController(
         val roles = userDetails.authorities.stream()
             .map { item: GrantedAuthority -> item.authority }
             .collect(Collectors.toList())
+        val id = userDetails.getId()
+        val name = userInfoRepository.findByIdOrNull(id)!!.name
         return JwtResponse(
-            jwt,
-            userDetails.getId(),
-            userDetails.username,
-            roles
+            accessToken = jwt,
+            id = id,
+            login = userDetails.username,
+            username = name,
+            roles = roles
         )
     }
 

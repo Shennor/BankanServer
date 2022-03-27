@@ -19,10 +19,10 @@ class UserToWorkspaceMappingEntity {
     @Column(name = "workspace_id", nullable = false)
     var workspaceId: Int? = null
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as UserToWorkspaceMappingEntity
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as UserToWorkspaceMappingEntity
         if (id != that.id) return false
         if (userId != that.userId) return false
         return workspaceId == that.workspaceId

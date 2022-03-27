@@ -38,7 +38,7 @@ class Workspace(
     @GetMapping("/user/{userId}")
     fun getWorkspaceByUserId(@PathVariable userId: Int): WorkspaceResponse {
         // check if person exists
-        val mappingEntity = userToWorkspaceMappingRepository.safeFindById(userId);
+        val mappingEntity = userToWorkspaceMappingRepository.safeFindById(userId)
         return getWorkspace(mappingEntity.workspaceId!!)
     }
 }

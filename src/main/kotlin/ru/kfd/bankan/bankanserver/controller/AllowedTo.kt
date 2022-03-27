@@ -31,11 +31,10 @@ class AllowedTo(
     private val boardRepository: BoardRepository,
     private val userToWorkspaceMappingRepository: UserToWorkspaceMappingRepository
 ) {
-    fun safeCurrentUser(): AuthInfoEntity
-    {
+    fun safeCurrentUser(): AuthInfoEntity {
         val principal = SecurityContextHolder.getContext().authentication.principal
 
-        val username : String = if (principal is UserDetails) {
+        val username: String = if (principal is UserDetails) {
             principal.username
         } else {
             principal.toString()
@@ -89,8 +88,8 @@ class AllowedTo(
 
     fun readByBoardId(boardId: Int) {
         val boardEntity = boardRepository.findById(boardId)
-            if(boardEntity.isEmpty)
-                throw IdNotFoundException("Board with id $boardId not found")
+        if (boardEntity.isEmpty)
+            throw IdNotFoundException("Board with id $boardId not found")
         //writeByBoardId(boardId)
     }
 

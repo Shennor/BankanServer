@@ -5,7 +5,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
-import org.springframework.util.StringUtils
 import org.springframework.web.filter.OncePerRequestFilter
 import ru.kfd.bankan.bankanserver.service.UserDetailsServiceImpl
 import java.io.IOException
@@ -48,7 +47,8 @@ class AuthTokenFilter(
     }
 
     private fun parseJwt(request: HttpServletRequest): String? {
-        val token = request.cookies.find { it.name == "token" }?: throw IllegalStateException("No auth token in cookies")
+        val token =
+            request.cookies.find { it.name == "token" } ?: throw IllegalStateException("No auth token in cookies")
         return token.value
 //        val headerAuth = request.getHeader("Authorization")
 //        return if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {

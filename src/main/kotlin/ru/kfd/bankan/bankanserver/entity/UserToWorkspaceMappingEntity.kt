@@ -4,7 +4,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "user_to_workspace_mapping")
-class UserToWorkspaceMappingEntity{
+class UserToWorkspaceMappingEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

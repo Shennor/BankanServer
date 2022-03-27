@@ -2,7 +2,6 @@ package ru.kfd.bankan.bankanserver.payload.request
 
 import ru.kfd.bankan.bankanserver.entity.BoardEntity
 import java.sql.Date
-import java.time.DateTimeException
 import java.time.LocalDate
 
 data class BoardCreateRequest(

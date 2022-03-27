@@ -2,7 +2,6 @@ package ru.kfd.bankan.bankanserver.controller.data
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.controller.AllowedTo
 import ru.kfd.bankan.bankanserver.controller.IdNotFoundException

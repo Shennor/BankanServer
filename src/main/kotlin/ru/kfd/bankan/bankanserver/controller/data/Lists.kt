@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver.controller.data
 
-import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.controller.AllowedTo
 import ru.kfd.bankan.bankanserver.controller.safeFindById

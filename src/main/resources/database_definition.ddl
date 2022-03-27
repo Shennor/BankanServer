@@ -24,11 +24,11 @@ create table card
 (
     id            integer primary key auto_increment,
     name          varchar(4096) not null,
-    color         integer     not null default (0),
-    creation_data date        not null default (curdate()),
+    color         integer       not null default (0),
+    creation_data date          not null default (curdate()),
     deadline      date,
-    creator_id    integer     not null,
-    card_content  json        not null,
+    creator_id    integer       not null,
+    card_content  json          not null,
 
     foreign key (creator_id) references user_info (id)
 );

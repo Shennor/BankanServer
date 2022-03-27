@@ -1,7 +1,6 @@
 package ru.kfd.bankan.bankanserver.config
 
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -12,11 +11,8 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.stereotype.Component
-import org.springframework.web.servlet.config.annotation.*
 import ru.kfd.bankan.bankanserver.AuthEntryPointJwt
 import ru.kfd.bankan.bankanserver.AuthTokenFilter
-import ru.kfd.bankan.bankanserver.controller.AccessControlInterceptor
 import ru.kfd.bankan.bankanserver.service.UserDetailsServiceImpl
 
 

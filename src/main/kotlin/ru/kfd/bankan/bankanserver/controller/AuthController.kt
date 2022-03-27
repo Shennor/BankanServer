@@ -1,7 +1,6 @@
 package ru.kfd.bankan.bankanserver.controller
 
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

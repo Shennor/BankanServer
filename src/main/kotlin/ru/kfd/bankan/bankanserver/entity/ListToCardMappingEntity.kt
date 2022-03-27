@@ -4,7 +4,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "list_to_card_mapping")
-class ListToCardMappingEntity (
+class ListToCardMappingEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")

@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver.entity
 
-import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 

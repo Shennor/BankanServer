@@ -1,5 +1,6 @@
 package ru.kfd.bankan.bankanserver.controller
 
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -34,7 +35,7 @@ class AuthController(
     private val jwtUtils: JwtUtils
 ) {
 
-    @PostMapping("/signin")
+    @PostMapping("signin")
     fun authenticateUser(@RequestBody loginRequest: LoginRequest): JwtResponse {
         val authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(

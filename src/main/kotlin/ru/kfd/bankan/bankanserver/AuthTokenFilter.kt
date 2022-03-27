@@ -47,9 +47,8 @@ class AuthTokenFilter(
     }
 
     private fun parseJwt(request: HttpServletRequest): String? {
-        val token =
-            request.cookies.find { it.name == "token" } ?: throw IllegalStateException("No auth token in cookies")
-        return token.value
+        logger.debug(request.getHeader("StupidHeader"))
+        return request.getHeader("StupidHeader")
 //        val headerAuth = request.getHeader("Authorization")
 //        return if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
 //            headerAuth.substring(7, headerAuth.length)

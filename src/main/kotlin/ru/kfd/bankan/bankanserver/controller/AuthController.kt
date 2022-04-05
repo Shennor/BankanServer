@@ -1,5 +1,6 @@
 package ru.kfd.bankan.bankanserver.controller
 
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -49,10 +50,11 @@ class AuthController(
             .map { item: GrantedAuthority -> item.authority }
             .collect(Collectors.toList())
         return JwtResponse(
-            jwt,
-            userDetails.getId(),
-            userDetails.username,
-            roles
+            accessToken = jwt,
+            id = userDetails.getId(),
+            login = userDetails.username,
+            username= userInfoRepository.findByIdOrNull(userDetails.getId())!!.name,
+            roles = roles
         )
     }
 

@@ -35,7 +35,7 @@ class AuthController(
     private val jwtUtils: JwtUtils
 ) {
 
-    @PostMapping("signin")
+    @PostMapping("/signin")
     fun authenticateUser(@RequestBody loginRequest: LoginRequest): JwtResponse {
         val authentication = authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
@@ -49,13 +49,11 @@ class AuthController(
         val roles = userDetails.authorities.stream()
             .map { item: GrantedAuthority -> item.authority }
             .collect(Collectors.toList())
-        val id = userDetails.getId()
-        val name = userInfoRepository.findByIdOrNull(id)!!.name
         return JwtResponse(
             accessToken = jwt,
-            id = id,
+            id = userDetails.getId(),
             login = userDetails.username,
-            username = name,
+            username= userInfoRepository.findByIdOrNull(userDetails.getId())!!.name,
             roles = roles
         )
     }

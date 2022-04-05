@@ -1,10 +1,13 @@
 package ru.kfd.bankan.bankanserver
 
+import antlr.StringUtils
+import io.jsonwebtoken.lang.Assert.hasText
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
+import org.springframework.util.Assert.hasText
 import org.springframework.web.filter.OncePerRequestFilter
 import ru.kfd.bankan.bankanserver.service.UserDetailsServiceImpl
 import java.io.IOException
@@ -47,12 +50,10 @@ class AuthTokenFilter(
     }
 
     private fun parseJwt(request: HttpServletRequest): String? {
-        logger.debug(request.getHeader("StupidHeader"))
-        return request.getHeader("StupidHeader")
-//        val headerAuth = request.getHeader("Authorization")
-//        return if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-//            headerAuth.substring(7, headerAuth.length)
-//        } else null
+        val headerAuth = request.getHeader("Authorization")
+        return if (org.springframework.util.StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+            headerAuth.substring(7, headerAuth.length)
+        } else null
     }
 
     companion object {

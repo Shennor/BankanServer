@@ -7,4 +7,5 @@ interface BoardToListMappingRepository : CrudRepository<BoardToListMappingEntity
     fun findByListId(listId: Int): BoardToListMappingEntity?
     fun findBoardToListMappingEntitiesByBoardId(boardId: Int): List<BoardToListMappingEntity>
     fun countBoardToListMappingEntitiesByBoardId(boardId: Int): Int
+    fun findAllByBoardId(boardId: Int): List<BoardToListMappingEntity>
 }

@@ -10,4 +10,5 @@ interface ListToCardMappingRepository : CrudRepository<ListToCardMappingEntity, 
     fun deleteByListIdAndCardId(listId: Int, cardId: Int)
     fun deleteAllByCardId(cardId: Int)
     fun countListToCardMappingEntitiesByListId(listId: Int): Int
+    fun findAllByListId(listId: Int): MutableList<ListToCardMappingEntity>
 }

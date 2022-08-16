@@ -2,7 +2,6 @@ package ru.kfd.bankan.bankanserver.controller.data
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.controller.AllowedTo
 import ru.kfd.bankan.bankanserver.controller.IdNotFoundException
@@ -13,7 +12,6 @@ import ru.kfd.bankan.bankanserver.payload.request.CardPatchRequest
 import ru.kfd.bankan.bankanserver.payload.request.asEntity
 import ru.kfd.bankan.bankanserver.payload.response.CardResponse
 import ru.kfd.bankan.bankanserver.payload.response.asResponse
-import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
 import ru.kfd.bankan.bankanserver.repository.CardRepository
 import ru.kfd.bankan.bankanserver.repository.ListRepository
 import ru.kfd.bankan.bankanserver.repository.ListToCardMappingRepository
@@ -23,7 +21,6 @@ import ru.kfd.bankan.bankanserver.repository.ListToCardMappingRepository
 class Cards(
     private val cardRepository: CardRepository,
     private val listRepository: ListRepository,
-    private val authInfoRepository: AuthInfoRepository,
     private val listToCardMappingRepository: ListToCardMappingRepository,
     private val allowedTo: AllowedTo,
 ) {

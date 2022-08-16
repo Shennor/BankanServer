@@ -26,6 +26,7 @@ class Settings(
         // read settings
         return userSettingsRepository.safeFindById(userId).asResponse
     }
+
     // TODO: Test
     @PatchMapping("/{userId}")
     fun updateSettings(@PathVariable userId: Int, @RequestBody request: SettingsPatchRequest) {

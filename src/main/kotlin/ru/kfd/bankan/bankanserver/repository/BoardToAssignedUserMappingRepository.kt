@@ -5,6 +5,6 @@ import ru.kfd.bankan.bankanserver.entity.BoardToAssignedUserEntity
 
 interface BoardToAssignedUserMappingRepository : CrudRepository<BoardToAssignedUserEntity, Int> {
     fun findBoardToAssignedUserEntitiesByBoardId(boardId: Int): List<BoardToAssignedUserEntity>
-    fun deleteAllByBoardIdAndUserId(boardId : Int, userId : Int)
-    fun existsByBoardId(boardId : Int) : Boolean
+    fun deleteAllByBoardIdAndUserId(boardId: Int, userId: Int)
+    fun existsByBoardId(boardId: Int): Boolean
 }

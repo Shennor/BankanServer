@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.controller.AllowedTo
 import ru.kfd.bankan.bankanserver.controller.safeFindById
 import ru.kfd.bankan.bankanserver.controller.updateWithIfNotNull
-import ru.kfd.bankan.bankanserver.entity.BoardEntity
 import ru.kfd.bankan.bankanserver.entity.BoardToAssignedUserEntity
 import ru.kfd.bankan.bankanserver.entity.WorkspaceToBoardMappingEntity
 import ru.kfd.bankan.bankanserver.payload.request.BoardCreateRequest
@@ -15,11 +14,6 @@ import ru.kfd.bankan.bankanserver.payload.response.ListInfoResponse
 import ru.kfd.bankan.bankanserver.payload.response.asListInfoResponse
 import ru.kfd.bankan.bankanserver.payload.response.asResponse
 import ru.kfd.bankan.bankanserver.repository.*
-import java.sql.Date
-import java.sql.Time
-import java.time.Instant.now
-import java.time.LocalDate
-import java.util.*
 
 
 // TODO
@@ -86,7 +80,7 @@ class Boards(
         allowedTo.writeByBoardId(boardId)
         workspaceToBoardMappingRepository.deleteWorkspaceToBoardMappingEntityByBoardId(boardId)
         boardToAssignedUserMappingRepository.deleteAllByBoardIdAndUserId(boardId, allowedTo.safeCurrentUser().userId)
-        if(!boardToAssignedUserMappingRepository.existsByBoardId(boardId))
+        if (!boardToAssignedUserMappingRepository.existsByBoardId(boardId))
             boardRepository.deleteById(boardId)
         // TODO("delete nested structures")
     }

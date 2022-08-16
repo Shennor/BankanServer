@@ -1,7 +1,5 @@
 package ru.kfd.bankan.bankanserver.controller.data
 
-import org.hibernate.annotations.Parameter
-import org.springframework.data.jpa.repository.Query
 import org.springframework.web.bind.annotation.*
 import ru.kfd.bankan.bankanserver.controller.AllowedTo
 import ru.kfd.bankan.bankanserver.controller.safeFindById
@@ -40,7 +38,7 @@ class Workspace(
     @GetMapping("/user/{userId}")
     fun getWorkspaceByUserId(@PathVariable userId: Int): WorkspaceResponse {
         // check if person exists
-        val mappingEntity = userToWorkspaceMappingRepository.safeFindById(userId);
+        val mappingEntity = userToWorkspaceMappingRepository.safeFindById(userId)
         return getWorkspace(mappingEntity.workspaceId!!)
     }
 }

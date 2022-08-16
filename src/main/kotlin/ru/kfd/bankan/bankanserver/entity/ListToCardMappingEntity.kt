@@ -4,7 +4,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "list_to_card_mapping")
-class ListToCardMappingEntity (
+class ListToCardMappingEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
@@ -22,10 +22,10 @@ class ListToCardMappingEntity (
     @Column(name = "index_of_card_in_list", nullable = false)
     var indexOfCardInList: Int,
 ) {
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as ListToCardMappingEntity
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as ListToCardMappingEntity
         if (id != that.id) return false
         if (listId != that.listId) return false
         if (cardId != that.cardId) return false

@@ -1,6 +1,5 @@
 package ru.kfd.bankan.bankanserver.entity
 
-import java.time.LocalDate
 import java.util.*
 import javax.persistence.*
 
@@ -28,10 +27,10 @@ class BoardEntity(
     @Column(name = "creation_data", nullable = false)
     var creationData: Date? = null
 ) {
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        val that = o as BoardEntity
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as BoardEntity
         if (id != that.id) return false
         if (isOpen != that.isOpen) return false
         if (if (name != null) name != that.name else that.name != null) return false

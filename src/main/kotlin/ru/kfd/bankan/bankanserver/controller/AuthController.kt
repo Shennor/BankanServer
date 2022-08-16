@@ -1,5 +1,7 @@
 package ru.kfd.bankan.bankanserver.controller
 
+import com.fasterxml.jackson.databind.util.JSONPObject
+import org.apache.tomcat.util.json.JSONParser
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -83,7 +85,7 @@ class AuthController(
         mapping.userId = newUser.id
         mapping.workspaceId = newWorkspace.id
         userToWorkspaceMappingRepository.save(mapping)
-        settingsRepository.save(UserSettingsEntity(userId = newUser.id, settings = "usual"))
+        settingsRepository.save(UserSettingsEntity(userId = newUser.id, settings = "{ \"something\": 1 }"))
         return ResponseEntity.ok<Any>(MessageResponse("User registered successfully!"))
     }
 }

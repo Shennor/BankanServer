@@ -8,6 +8,8 @@ create table user_info
     id                integer primary key auto_increment,
     name              varchar(40) not null,
     registration_date date        not null default (curdate())
+    image_source      varchar(200) default ''
+    about             varchar(10000) default ''
 );
 
 create table auth_info

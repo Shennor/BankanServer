@@ -11,8 +11,8 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import ru.kfd.bankan.bankanserver.AuthEntryPointJwt
-import ru.kfd.bankan.bankanserver.AuthTokenFilter
+import ru.kfd.bankan.bankanserver.config.auth.AuthEntryPointJwt
+import ru.kfd.bankan.bankanserver.config.auth.AuthTokenFilter
 import ru.kfd.bankan.bankanserver.service.UserDetailsServiceImpl
 
 

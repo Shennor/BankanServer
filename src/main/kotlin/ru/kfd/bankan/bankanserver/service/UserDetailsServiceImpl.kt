@@ -7,10 +7,9 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.kfd.bankan.bankanserver.entity.AuthInfoEntity
-import ru.kfd.bankan.bankanserver.entity.UserInfoEntity
-import ru.kfd.bankan.bankanserver.repository.AuthInfoRepository
-import ru.kfd.bankan.bankanserver.repository.UserInfoRepository
+import ru.kfd.bankan.bankanserver.database.entity.UserInfoEntity
+import ru.kfd.bankan.bankanserver.database.repository.AuthInfoRepository
+import ru.kfd.bankan.bankanserver.database.repository.UserInfoRepository
 
 @Primary
 @Service
@@ -29,7 +28,7 @@ class UserDetailsServiceImpl(
         return UserDetailsImpl.build(user)
     }
 
-    fun saveUser(auth: AuthInfoEntity, user: UserInfoEntity): Boolean {
+    fun saveUser(auth: ru.kfd.bankan.bankanserver.database.entity.AuthInfoEntity, user: UserInfoEntity): Boolean {
         if (authInfoRepository.existsByEmail(auth.email)) {
             return false
         }

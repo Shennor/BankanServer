@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import ru.kfd.bankan.bankanserver.entity.AuthInfoEntity
+import ru.kfd.bankan.bankanserver.database.entity.AuthInfoEntity
 import java.util.*
 
 
